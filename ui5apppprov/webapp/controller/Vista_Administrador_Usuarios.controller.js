@@ -50,7 +50,7 @@ sap.ui.define([
 			var oView = this.getView();
 			var oModel = oView.getModel("myParam");
 			oView.setModel(oModel);
-			// Tablas1
+			// Tablas11
 			this.varTableURL = oModel.getProperty("/listTablasOData/clistTablasODataURL");
 			this.varTableDocument = oModel.getProperty("/listTablasOData/clistTablasODataDocument");
 			this.varTableT_CEN = oModel.getProperty("/listTablasOData/clistTablasODataT_CEN");
