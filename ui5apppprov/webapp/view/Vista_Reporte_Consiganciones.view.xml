@@ -1,0 +1,230 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:m="sap.m" xmlns:layout="sap.ui.layout"
+	xmlns:tab="sap.ui.table" controllerName="nspprov.ui5apppprov.controller.Vista_Reporte_Consiganciones"
+	xmlns:u="sap.ui.unified" xmlns:html="http://www.w3.org/1999/xhtml">
+	<m:App id="app">
+		<m:pages>
+			<m:SplitApp id="SplitAppDemo" initialDetail="detailF" initialMaster="master1" afterMasterOpen="showEvent" afterMasterNavigate="showEvent"
+				orientationChange="onOrientationChange" mode="ShowHideMode">
+				<m:masterPages>
+					<m:Page id="master1" title="Cuadro de busqueda" class="sapUiStdPage" showFooter="true">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Consignaciones" titleStyle="H5" id="idTituloOrden"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button id="idNavMenu" width="100%" icon="sap-icon://nav-back" press="btnRegresarMenu"/>
+								</m:contentLeft>
+								<m:contentRight>
+									<m:Button id="idFilter" icon="sap-icon://filter" press="btnFiltros"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:SearchField liveChange="onSearchFac" width="100%" placeholder="Buscar factura"/>
+							<m:List id="idListMaster1" items="{ path : 'myParam>/listFactura'}" includeItemInSelection="true" mode="SingleSelectMaster"
+								noDataText="No se halló ninguna Factura" select="clicItemFactura">
+								<m:items>
+									<m:ObjectListItem title="Periodo: {myParam>BUDATI} - {myParam>BUDATF}" icon="sap-icon://sales-order-item" type="Active"
+										press="clicItemFactura" intro="{myParam>NAME1}">
+										<m:attributes>
+											<m:ObjectAttribute title="RUC Empresa" text="{ path: 'myParam>EM_RUC'}"/>
+											<m:ObjectAttribute title="RUC Proveedor" text="{myParam>US_RUC}"/>
+											<m:ObjectAttribute title="Centro" text="{myParam>WERKS}"/>
+										</m:attributes>
+									</m:ObjectListItem>
+								</m:items>
+							</m:List>
+						</m:content>
+					</m:Page>
+					<m:Page id="master2" title="Cuadro de busqueda" class="sapUiStdPage" showFooter="true">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Filtros" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button width="100%" icon="sap-icon://nav-back" press="btnRegresarMaster1"/>
+								</m:contentLeft>
+								<m:contentRight>
+									<m:Button width="100%" icon="sap-icon://add-filter" press="btnSeleccionarFiltros"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<layout:VerticalLayout width="100%" class="sapUiSmallMargin">
+								<m:Toolbar id="idToolbarMensaje" width="90%" style="Clear">
+									<m:Label text="Habilite los filtros a realizar con el botón de la parte superior." width="90%" wrapping="true"/>
+									<core:Icon src="sap-icon://shortcut" class="size1" color="#0854a0" width="10%"></core:Icon>
+								</m:Toolbar>
+								<layout:VerticalLayout width="90%" id="idPanelPorFecha">
+									<m:SegmentedButton id="idSegmentedSelect" width="100%" class="sapUiSmallMarginBottom sapUiSizeCompact">
+										<m:items>
+											<m:SegmentedButtonItem text="Por Fecha" press="handleNav" icon="sap-icon://check-availability">
+												<m:customData>
+													<core:CustomData key="target" value="pag1"/>
+												</m:customData>
+											</m:SegmentedButtonItem>
+											<m:SegmentedButtonItem text="Entre Fechas" press="handleNav" icon="sap-icon://check-availability">
+												<m:customData>
+													<core:CustomData key="target" value="pag2"/>
+												</m:customData>
+											</m:SegmentedButtonItem>
+										</m:items>
+									</m:SegmentedButton>
+									<m:NavContainer id="navCon" width="100%" height="4.2em" class="navContainerControl sapUiSmallMarginBottom">
+										<m:Page id="pag1" showHeader="false" title="Filtro por Fecha">
+											<m:Label text="Fecha: " design="Bold" labelFor="idFec"/>
+											<m:OverflowToolbar height="auto">
+												<m:DatePicker id="idFec" value="2018-09-26" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom" width="100%"
+													placeholder="DD/MM/AAAA" required="true"/>
+											</m:OverflowToolbar>
+										</m:Page>
+										<m:Page id="pag2" showHeader="false" title="Filtro entre Fechas">
+											<m:Label text="Fecha Inicio: " design="Bold" labelFor="idFecIni"/>
+											<m:DatePicker id="idFecIni" value="2011-09-17" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom"
+												width="100%" placeholder="DD/MM/AAAA" required="true"/>
+											<m:Label text="Fecha Final: " design="Bold" labelFor="idFecFin"/>
+											<m:OverflowToolbar height="auto">
+												<m:DatePicker id="idFecFin" value="2019-09-20" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom"
+													width="100%" placeholder="DD/MM/AAAA" required="true"/>
+											</m:OverflowToolbar>
+										</m:Page>
+									</m:NavContainer>
+								</layout:VerticalLayout>
+								<layout:VerticalLayout width="90%" id="idPanelPorSituacion">
+									<m:Label text="Filtro Situación: " design="Bold" labelFor="idSituacion"/>
+									<m:OverflowToolbar height="auto">
+										<m:ComboBox id="idSituacion" items="{ path: 'myParam>/listSituacion'}" class="sapUiSmallMarginBottom" placeholder="- Seleccione -"
+											required="false" width="100%">
+											<core:Item key="{myParam>clistSituacionNom}" text="{myParam>clistSituacionNom}"/>
+										</m:ComboBox>
+									</m:OverflowToolbar>
+								</layout:VerticalLayout>
+								<layout:VerticalLayout width="90%" id="idPanelPorEstado" class="sapUiSmallMarginTop">
+									<m:Label text="Filtro Estado: " design="Bold" labelFor="idEstado"/>
+									<m:OverflowToolbar height="auto">
+										<m:ComboBox id="idEstado" items="{ path: 'myParam>/listEstado'}" class="sapUiSmallMarginBottom" placeholder="- Seleccione -"
+											required="false" width="100%">
+											<core:Item key="{myParam>clistEstadoNom}" text="{myParam>clistEstadoNom}"/>
+										</m:ComboBox>
+									</m:OverflowToolbar>
+								</layout:VerticalLayout>
+							</layout:VerticalLayout>
+						</m:content>
+					</m:Page>
+				</m:masterPages>
+				<m:detailPages>
+					<m:Page id="detailF" class="panel_1 clTitle" title="Factura previa ">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title level="H3" text="Factura de Consignación previa"/>
+								</m:contentMiddle>
+								<m:contentRight>
+									<m:Button id="idLogOff" icon="sap-icon://log" press="LogOffPress"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader id="ohFac" binding="{path : 'myParam>/listConsultaResumenFactura'}" responsive="true" fullScreenOptimized="false"
+								icon="sap-icon://sales-order-item" title="Factura de Consignación" backgroundDesign="Translucent" intro="{myParam>NAME1}"
+								number="{myParam>/varImporteTotal}" numberUnit="{myParam>BWAER}" titleActive="true" titlePress="handleTitlePress">
+								<m:attributes>
+									<m:ObjectAttribute title="RUC Proveedor" text="{ path: 'myParam>US_RUC'}"/>
+									<m:ObjectAttribute title="RUC Empresa" text="{myParam>EM_RUC}"/>
+									<m:ObjectAttribute title="Inicio Periodo" text="{myParam>BUDATI}"/>
+									<m:ObjectAttribute title="Fin Periodo" text="{myParam>BUDATF}"/>
+									<m:ObjectAttribute title="Centro" text="{myParam>WERKS}"/>
+								</m:attributes>
+							</m:ObjectHeader>
+							<layout:Grid defaultSpan="L12 M12 S12">
+								<layout:content>
+									<m:VBox id="idPanelDetalle">
+										<tab:Table id="idTableItemFacturas" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemFacturas'}" visibleRowCount="13"
+											showNoData="No se hallaron Items.">
+											<tab:toolbar>
+												<m:Toolbar>
+													<core:Icon src="sap-icon://paid-leave" alt="Cart" size="1.25rem"/>
+													<m:Title text="Posiciones de la factura" titleStyle="H3"/>
+													<m:ToolbarSpacer/>
+													<m:Button text="Descargar" id="idDescargarPDF" icon="sap-icon://pdf-attachment" press="btnDescargarPDF" type="Emphasized"/>
+													<m:Title text="N° Registros ( {myParam>/listItemFacturasLenght} )" titleStyle="H4"/>
+												</m:Toolbar>
+											</tab:toolbar>
+											<tab:noData>
+												<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+											</tab:noData>
+											<tab:columns>
+												<tab:Column width="5rem" hAlign="Center">
+													<m:Text text="Ejercicio"/>
+													<tab:template>
+														<m:Label text="{myParam>MJAHR}" design="{path: 'myParam>MJAHR',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="7rem" hAlign="Center">
+													<m:Text text="Doc. Material"/>
+													<tab:template>
+														<m:Label text="{myParam>MBLNR}" design="{path: 'myParam>MBLNR',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="5rem" hAlign="Center">
+													<m:Text text="Posición"/>
+													<tab:template>
+														<m:Label text="{myParam>ZEILE}" design="{path: 'myParam>ZEILE',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="7rem" hAlign="Center">
+													<m:Text text="Fec. Documento"/>
+													<tab:template>
+														<m:Label text="{myParam>BLDAT}" design="{path: 'myParam>BLDAT',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="6rem" hAlign="Center">
+													<m:Text text="Material"/>
+													<tab:template>
+														<m:Label text="{myParam>MATNR}" design="{path: 'myParam>MATNR',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="20rem" hAlign="Center">
+													<m:Text text="Descripción"/>
+													<tab:template>
+														<m:Label text="{myParam>MAKTX}" design="{path: 'myParam>MAKTX',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="5rem" hAlign="Center">
+													<m:Text text="Cantidad"/>
+													<tab:template>
+														<m:Label text="{myParam>BSTMG}" design="{path: 'myParam>BSTMG',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="5rem" hAlign="Center">
+													<m:Text text="UMB"/>
+													<tab:template>
+														<m:Label text="{myParam>BSTME}" design="{path: 'myParam>BSTME',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="6rem" hAlign="Center">
+													<m:Text text="Importe"/>
+													<tab:template>
+														<m:Label text="{myParam>WRBTR}" design="Bold"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="5rem" hAlign="Center">
+													<m:Text text="Moneda"/>
+													<tab:template>
+														<m:Label text="{myParam>BWAER}" design="{path: 'myParam>BWAER',formatter: '.funcionNegrita'}"/>
+													</tab:template>
+												</tab:Column>
+											</tab:columns>
+										</tab:Table>
+									</m:VBox>
+								</layout:content>
+							</layout:Grid>
+						</m:content>
+					</m:Page>
+				</m:detailPages>
+			</m:SplitApp>
+		</m:pages>
+	</m:App>
+</mvc:View>

@@ -1,0 +1,1219 @@
+<mvc:View controllerName="nspprov.ui5apppprov.controller.Vista_Orden_Compra" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:m="sap.m" xmlns:layout="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:tab="sap.ui.table" displayBlock="true" xmlns="sap.m">
+	<m:App id="app">
+		<m:pages>
+			<m:SplitApp id="SplitAppDemo" initialDetail="detail" initialMaster="master" 
+				orientationChange="onOrientationChange" mode="ShowHideMode">
+				<m:masterPages>
+					<m:Page id="master1" title="Cuadro de busqueda" class="sapUiStdPage" showFooter="true">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Ordenes de Compra" titleStyle="H5" id="idTituloOrden"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button id="idNavMenu" width="100%" icon="sap-icon://nav-back" press="btnRegresarMenu"/>
+								</m:contentLeft>
+								<m:contentRight>
+									<m:Button id="idFiltro" icon="sap-icon://filter" press="btnFiltros"  tooltip="Filtrar OC"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:SearchField liveChange="onSearch" width="100%" placeholder="Buscar O/C"/>
+							<m:List id="idListMaster1" items="{ path : 'myParam>/listOrdenCompra'}" includeItemInSelection="true" mode="SingleSelectMaster"
+								select="clicItemOrden" noDataText="No se halló ninguna Orden de Compra">
+								<m:items>
+									<m:ObjectListItem title="O/C: {myParam>cOrdenCompraNum}" icon="sap-icon://document-text" type="Active" press="clicItemOrden"
+										number="{ parts:[{path:'myParam>cOrdenCompraImporte'},{path:'myParam>cOrdenCompraMoneda'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
+										numberUnit="{myParam>cOrdenCompraMoneda}">
+										<m:attributes>
+											<m:ObjectAttribute
+												text="Fecha: { path: 'myParam>cOrdenCompraFechaEmision'}"/>
+											<m:ObjectAttribute title="IGV" text="{myParam>cOrdenCompraIGV}"/>
+										</m:attributes>
+										<m:firstStatus>
+											<m:ObjectStatus text="{myParam>cOrdenCompraEstado}" state="None"/>
+										</m:firstStatus>
+										<m:secondStatus>
+											<m:ObjectStatus text="{myParam>cOrdenCompraSituacion}"
+												state="{ path: 'myParam>cOrdenCompraSituacion', formatter: '.formatAvailableToObjectState' }"/>
+										</m:secondStatus>
+									</m:ObjectListItem>
+								</m:items>
+							</m:List>
+						</m:content>
+					</m:Page>
+					<m:Page id="master3" class="sapUiStdPage" showFooter="true">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Facturas previas (0)" titleStyle="H5" id="idTituloFactura"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button width="100%" icon="sap-icon://nav-back" press="btnRegresarMaster"/>
+								</m:contentLeft>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:SearchField liveChange="onSearchFac" width="100%" placeholder="Buscar Factura"/>
+							<m:List id="idListMaster3" items="{ path : 'myParam>/listOrdenCompraFactura'}" includeItemInSelection="true" mode="SingleSelectMaster"
+								select="clicItemFactura" noDataText="No se halló ninguna Factura">
+								<m:items>
+									<m:ObjectListItem title="Factura: {myParam>OC_ID_FACTURA}" icon="sap-icon://sales-order-item" type="Active" press="clicItemFactura"
+										intro="{myParam>RAZON_SOCIAL_ADQ} - {myParam>NOMBRE_COMERCIAL}" number="{myParam>TOTAL_IMP}" numberUnit="{myParam>MONEDA}">
+										<m:attributes>
+											<m:ObjectAttribute title="Fecha" text="{ path: 'myParam>OC_FECHA_EMISION'}"/>
+											<m:ObjectAttribute title="Hora" text="{myParam>OC_HORA}"/>
+										</m:attributes>
+										<m:firstStatus>
+											<m:ObjectStatus text="{myParam>RUC_ADQ}" state="None"/>
+										</m:firstStatus>
+										<m:secondStatus>
+											<m:ObjectStatus text="{myParam>OC_USUARIO}" state="None"/>
+										</m:secondStatus>
+									</m:ObjectListItem>
+								</m:items>
+							</m:List>
+						</m:content>
+					</m:Page>
+					<m:Page id="master2" title="Cuadro de busqueda" class="sapUiStdPage" showFooter="true">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Filtros" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button id="idNavOC" width="100%" icon="sap-icon://nav-back" press="btnRegresarMaster1"/>
+								</m:contentLeft>
+								<m:contentRight>
+									<m:Button id="idFilter2" width="100%" icon="sap-icon://add-filter" press="btnSeleccionarFiltros"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+								<m:VBox id="idFilterSection">
+							<layout:VerticalLayout width="100%" class="sapUiSmallMargin">
+								<m:Toolbar id="idToolbarMensaje" width="90%" style="Clear">
+									<m:Label text="Habilite los filtros a realizar con el botón de la parte superior." width="90%" wrapping="true"/>
+									<core:Icon src="sap-icon://shortcut" class="size1" color="#0854a0" width="10%"></core:Icon>
+								</m:Toolbar>
+								<layout:VerticalLayout width="90%" id="idPanelPorFecha">
+									<m:SegmentedButton id="idSegmentedSelect" width="100%" class="sapUiSmallMarginBottom sapUiSizeCompact">
+										<m:items>
+											<m:SegmentedButtonItem text="Por Fecha" press="handleNav" icon="sap-icon://check-availability">
+												<m:customData>
+													<core:CustomData key="target" value="pag1"/>
+												</m:customData>
+											</m:SegmentedButtonItem>
+											<m:SegmentedButtonItem text="Entre Fechas" press="handleNav" icon="sap-icon://check-availability">
+												<m:customData>
+													<core:CustomData key="target" value="pag2"/>
+												</m:customData>
+											</m:SegmentedButtonItem>
+										</m:items>
+									</m:SegmentedButton>
+									<m:NavContainer id="navCon" width="100%" height="4.2em" class="navContainerControl sapUiSmallMarginBottom">
+										<m:Page id="pag1" showHeader="false" title="Filtro por Fecha">
+											<m:Label text="Fecha: " design="Bold" labelFor="idFec"/>
+											<m:OverflowToolbar height="auto">
+												<m:DatePicker id="idFec" value="2018-09-26" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom" width="100%"
+													placeholder="DD/MM/AAAA" required="true"/>
+											</m:OverflowToolbar>
+										</m:Page>
+										<m:Page id="pag2" showHeader="false" title="Filtro entre Fechas">
+											<m:Label text="Fecha Inicio: " design="Bold" labelFor="idFecIni"/>
+											<m:DatePicker id="idFecIni" value="2011-09-17" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom"
+												width="100%" placeholder="DD/MM/AAAA" required="true"/>
+											<m:Label text="Fecha Final: " design="Bold" labelFor="idFecFin"/>
+											<m:OverflowToolbar height="auto">
+												<m:DatePicker id="idFecFin" value="2019-09-20" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom"
+													width="100%" placeholder="DD/MM/AAAA" required="true"/>
+											</m:OverflowToolbar>
+										</m:Page>
+									</m:NavContainer>
+								</layout:VerticalLayout>
+								<layout:VerticalLayout width="90%" id="idPanelPorSituacion">
+									<m:Label text="Filtro Situación: " design="Bold" labelFor="idSituacion"/>
+									<m:OverflowToolbar height="auto">
+										<m:ComboBox id="idSituacion" items="{ path: 'myParam>/listSituacion'}" class="sapUiSmallMarginBottom" placeholder="- Seleccione -"
+											required="true" width="100%">
+											<core:Item key="{myParam>clistSituacionNom}" text="{myParam>clistSituacionNom}"/>
+										</m:ComboBox>
+									</m:OverflowToolbar>
+								</layout:VerticalLayout>
+								<layout:VerticalLayout width="90%" id="idPanelPorEstado" class="sapUiSmallMarginTop">
+									<m:Label text="Filtro Estado: " design="Bold" labelFor="idEstado"/>
+									<m:OverflowToolbar height="auto">
+										<m:ComboBox id="idEstado" items="{ path: 'myParam>/listEstado'}" class="sapUiSmallMarginBottom" placeholder="- Seleccione -"
+											required="true" width="100%">
+											<core:Item key="{myParam>clistEstadoNom}" text="{myParam>clistEstadoNom}"/>
+										</m:ComboBox>
+									</m:OverflowToolbar>
+								</layout:VerticalLayout>
+									<layout:VerticalLayout width="90%" id="idPanelCheck" class="sapUiSmallMarginTop">
+											<m:CheckBox id="idFiltroDes" text="Desactivar los filtros seleccionados" selected="false" visible="false" valueState="Information"/>
+								</layout:VerticalLayout>
+							</layout:VerticalLayout>
+								</m:VBox>
+						</m:content>
+					</m:Page>
+				</m:masterPages>
+				<m:detailPages>
+					<m:Page id="detail1" class="panel_1 clTitle" title="Orden de Compra (Modo Detalle)">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+										<m:Title text="Orden de Compra detalle" titleStyle="H5" />
+								</m:contentMiddle>
+								<m:contentRight>
+									<m:Button id="idLogOff" icon="sap-icon://log" press="LogOffPress"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader id="oh1" binding="{path : 'myParam>/listConsultaResumenOrden'}" responsive="true" fullScreenOptimized="false"
+								icon="sap-icon://document-text" title="Orden de Compra: {myParam>rOrdenCompra}" backgroundDesign="Translucent"
+								number="{ parts:[{path:'myParam>rImporte'},{path:'myParam>rMoneda'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
+								numberUnit="{myParam>rMoneda}">
+								<m:attributes>
+									<m:ObjectAttribute title="Fecha" text="{myParam>rFecha}"/>
+									<m:ObjectAttribute title="IGV" text="{myParam>rIGV}"/>
+									<m:ObjectAttribute title="Estado de la O/C" text="{myParam>rEstado}"/>
+								</m:attributes>
+								<m:statuses>
+									<m:ObjectStatus title="Situación de la O/C" text="{myParam>rSituacion}"
+										state="{ path: 'myParam>rSituacion', formatter: '.formatAvailableToObjectState' }"/>
+								</m:statuses>
+							</m:ObjectHeader>
+							<m:IconTabBar id="idIconTabBarSeparatorMixed" expanded="true" class="sapUiResponsiveContentPadding" >
+								<m:items>
+									<m:IconTabFilter id="idIconBarEnProceso" key="EnProceso" text="Items" showAll="true"
+										count="{myParam>/listTotalItemEnProceso/rCampoEnProceso}">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<tab:Table id="idTableItemEnProceso" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemFiltroEnProceso'}" visibleRowCount="8"
+														showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																<m:Title text="Items" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Title text="N° Registros ( {myParam>/listTotalItemEnProceso/rCampoEnProceso} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column id="idColumEnProceso7" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumEnProceso7" text="Posición"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroEnProcesoPosicion}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEnProceso1" width="20rem" hAlign="Center">
+																<m:Text id="idTextColumEnProceso1" text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroEnProcesoDescripcion}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEnProceso2" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumEnProceso2" text="Cantidad"/>
+																<tab:template>
+																	<Text text="{myParam>clistItemFiltroEnProcesoCantidad}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEnProceso3" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumEnProceso3" text="Precio"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroEnProcesoPrecio', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroEnProcesoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEnProceso4" width="9rem" hAlign="Center">
+																<m:Text id="idTextColumEnProceso4" text="Valor Neto"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroEnProcesoValorNeto', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroEnProcesoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEnProceso5" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumEnProceso5" text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{myParam>clistItemFiltroEnProcesoEstado}"
+																		state="{ path: 'myParam>clistItemFiltroEnProcesoEstado', formatter: '.formatAvailableToObjectState' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEnProceso6" width="4rem" hAlign="Center">
+																<m:Text id="idTextColumEnProceso6" text=""/>
+																<tab:template>
+																	<m:Button icon="sap-icon://slim-arrow-right" press="clicItemEnProceso" type="Emphasized"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+									<m:IconTabSeparator/>
+									<m:IconTabFilter id="idIconBarPendiente" key="Pendiente" text="Pendiente" icon="sap-icon://pushpin-off"
+										count="{myParam>/listTotalItemPendiente/rCampoPendiente}" iconColor="Negative">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<tab:Table id="idTableItemPendiente" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemFiltroPendiente'}" visibleRowCount="8"
+														showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																<m:Title text="Items" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Title text="N° Registros ( {myParam>/listTotalItemPendiente/rCampoPendiente} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column id="idColumPendiente1" width="17rem" hAlign="Center">
+																<m:Text id="idTextColumPendiente1" text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroPendienteDescripcion}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumPendiente2" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumPendiente2" text="Cantidad"/>
+																<tab:template>
+																	<m:Text text="{myParam>clistItemFiltroPendienteCantidad}"/>
+																</tab:template>
+															</tab:Column>
+														<!--	<tab:Column id="idColumPendiente8" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumPendiente8" text="Disponible a Facturar"/>
+																<tab:template>
+																	<m:Text
+																		text="{ parts:[{path:'myParam>clistItemFiltroPendienteValorNeto'},{path:'myParam>clistItemFiltroPendienteDescuento'}], formatter: '.formatoCalculoDisponible' }"/>
+																</tab:template>
+															</tab:Column>-->
+															<tab:Column id="idColumPendiente3" width="7rem" hAlign="Center">
+																<m:Text id="idTextColumPendiente3" text="Precio"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroPendientePrecio', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroPendienteMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumPendiente4" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumPendiente4" text="Valor Neto"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroPendienteValorNeto', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroPendienteMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumPendiente6" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumPendiente6" text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{ path: 'myParam>clistItemFiltroPendienteEstado', formatter: '.formatAvailableToObjectText' }"
+																		state="{ path: 'myParam>clistItemFiltroPendienteEstado', formatter: '.formatAvailableToObjectState' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumPendiente7" width="4rem" hAlign="Center">
+																<m:Text id="idTextColumPendiente7" text=""/>
+																<tab:template>
+																	<m:Button icon="sap-icon://slim-arrow-right" press="clicItemEnPendiente" type="Emphasized"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+									<m:IconTabSeparator icon="sap-icon://open-command-field"/>
+									<m:IconTabFilter id="idIconBarEntregado" key="Entregado" text="Entregado" icon="sap-icon://shipping-status"
+										count="{myParam>/listTotalItemEntregado/rCampoEntregado}" iconColor="Critical">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<tab:Table id="idTableItemEntregado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemFiltroEntregado'}" visibleRowCount="8"
+														showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																<m:Title text="Items" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Button text="Seleccione para facturar" type="Transparent" press="btnSelectFactura3" visible="false"/>
+																<m:Title text="N° Registros ( {myParam>/listTotalItemEntregado/rCampoEntregado} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column id="idColumEntregado9" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado9" text="Posición"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroEntregadoPosicion}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEntregado1" width="14rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado1" text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroEntregadoDescripcion}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEntregado2" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado2" text="Cantidad"/>
+																<tab:template>
+																	<m:Text text="{myParam>clistItemFiltroEntregadoCantidad}"/>
+																</tab:template>
+															</tab:Column>
+																<tab:Column id="idColumEntregado4" width="7rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado4" text="Valor Neto"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroEntregadoValorNeto', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroEntregadoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEntregado21" width="7rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado21" text="Disponible a facturar"/>
+																<tab:template>
+																		<m:ObjectNumber 
+																		number="{ parts:[{path:'myParam>clistItemFiltroEntregadoValorNeto'},{path:'myParam>clistItemFiltroEntregadoDescuento'}], formatter: '.formatoCalculoDisponible' }"
+																			unit="{myParam>clistItemFiltroEntregadoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<!--<tab:Column id="idColumEntregado8" width="7rem" hAlign="Center">-->
+															<!--<m:Text id="idTextColumEntregado8" text="Valor a facturar"/>-->
+															<!--<tab:template>-->
+															<!--<m:Input id="idEntregadoCantAFacturar" value="{myParam>clistItemFiltroEntregadoCantidadFac}" type="Number" placeholder="" required="true"-->
+															<!--width="100%" liveChange="evtCambioCantidad"/>-->
+															<!--</tab:template>-->
+															<!--</tab:Column>-->
+															<tab:Column id="idColumEntregado3" width="7rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado3" text="Precio"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroEntregadoPrecio', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroEntregadoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+																	<tab:Column  width="8rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado6" text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{ path: 'myParam>clistItemFiltroEntregadoEstado', formatter: '.formatAvailableToObjectText' }"
+																		state="{ path: 'myParam>clistItemFiltroEntregadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumEntregado7" width="4rem" hAlign="Center">
+																<m:Text id="idTextColumEntregado7" text=""/>
+																<tab:template>
+																	<m:Button icon="sap-icon://slim-arrow-right" press="clicItemEntregado" type="Emphasized"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+									<m:IconTabSeparator id="idSeparadorVertical" icon="sap-icon://open-command-field"/>
+									<m:IconTabFilter id="idIconBarAceptado" key="Facturado" text="Facturado" icon="sap-icon://collections-insight"
+										count="{myParam>/listTotalItemAceptado/rCampoAceptado}" iconColor="Positive">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<tab:Table id="idTableItemAceptado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemFiltroAceptado'}" visibleRowCount="8"
+														showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																<m:Title text="Items" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Button text="Seleccione para facturar" type="Transparent" press="btnSelectFactura4" visible="false"/>
+																<m:Title text="N° Registros ( {myParam>/listTotalItemAceptado/rCampoAceptado} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column id="idColumAceptado9" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado9" text="Posición"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroAceptadoPosicion}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumAceptado1" width="15rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado1" text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroAceptadoDescripcion}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumAceptado2" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado2" text="Cantidad"/>
+																<tab:template>
+																	<m:Text text="{myParam>clistItemFiltroAceptadoCantidad}"/>
+																</tab:template>
+															</tab:Column>
+													<!--		<tab:Column id="idColumAceptado21" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado21" text="Disponible a facturar"/>
+																<tab:template>
+																	<m:Text
+																		text="{ parts:[{path:'myParam>clistItemFiltroAceptadoCantidad'},{path:'myParam>clistItemFiltroAceptadoFactura'},{path:'myParam>clistItemFiltroAceptadoDescuento'}], formatter: '.formatoCalculoDisponible' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumAceptado8" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado8" text="Cantidad a facturar"/>
+																<tab:template>
+																	<m:Input id="idAceptadoCantAFacturar" value="{myParam>clistItemFiltroAceptadoCantidadFac}" type="Number" placeholder="" required="true"
+																		width="100%" liveChange="evtCambioCantidadA"/>
+																</tab:template>
+															</tab:Column>-->
+															<tab:Column id="idColumAceptado3" width="7rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado3" text="Precio"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroAceptadoPrecio', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroAceptadoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumAceptado4" width="7rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado4" text="Valor Neto"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroAceptadoValorNeto', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroAceptadoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumAceptado6" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado6" text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{ path: 'myParam>clistItemFiltroAceptadoEstado', formatter: '.formatAvailableToObjectText' }"
+																		state="{ path: 'myParam>clistItemFiltroAceptadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumAceptado7" width="4rem" hAlign="Center">
+																<m:Text id="idTextColumAceptado7" text=""/>
+																<tab:template>
+																	<m:Button icon="sap-icon://slim-arrow-right" press="clicItemAceptado" type="Emphasized"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+									<m:IconTabSeparator id="idSeparadorDerecha" icon="sap-icon://open-command-field"/>
+									<m:IconTabFilter id="idIconBarFacturado" key="Finalizado" text="Finalizado" icon="sap-icon://paper-plane"
+										count="{myParam>/listTotalItemFacturado/rCampoFacturado}" iconColor="Default">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<tab:Table id="idTableItemFacturado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemFiltroFacturado'}" visibleRowCount="8"
+														showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																<m:Title text="Items" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Title text="N° Registros ( {myParam>/listTotalItemFacturado/rCampoFacturado} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column id="idColumFacturado1" width="17rem" hAlign="Center">
+																<m:Text id="idTextColumFacturado1" text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemFiltroFacturadoDescripcion}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumFacturado2" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumFacturado2" text="Valor facturada"/>
+																<tab:template>
+																	<m:Text text="{myParam>clistItemFiltroFacturadoCantidad}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumFacturado3" width="7rem" hAlign="Center">
+																<m:Text id="idTextColumFacturado3" text="Precio"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroFacturadoPrecio', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroFacturadoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumFacturado4" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumFacturado4" text="Valor Neto"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>clistItemFiltroFacturadoValorNeto', formatter: '.convertirDecimal' }"
+																		unit="{myParam>clistItemFiltroFacturadoMoneda}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumFacturado5" width="9rem" hAlign="Center">
+																<m:Text id="idTextColumFacturado5" text="Nº de Factura"/>
+																<tab:template>
+																	<m:Text text="{myParam>clistItemFiltroFacturadoNumFacturaSunat}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumFacturado6" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumFacturado6" text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{ path: 'myParam>clistItemFiltroFacturadoEstado', formatter: '.formatAvailableToObjectText' }"
+																		state="{ path: 'myParam>clistItemFiltroFacturadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumFacturado7" width="4rem" hAlign="Center">
+																<m:Text id="idTextColumFacturado7" text=""/>
+																<tab:template>
+																	<m:Button icon="sap-icon://slim-arrow-right" press="clicItemFacturado" type="Emphasized"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+								</m:items>
+							</m:IconTabBar>
+						</m:content>
+							<m:footer>
+							<m:Toolbar>
+								<m:ToolbarSpacer/>
+								<m:Button text="Registrar factura" icon="sap-icon://sales-order-item" type="Emphasized" id="idButtonFac" press="btnSelectFactura"/>
+							</m:Toolbar>
+						</m:footer>
+					</m:Page>
+					<m:Page id="detailF" class="panel_1 clTitle" title="Factura previa (Modo Factura)">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Text text="Factura previa (Modo Factura)"/>
+								</m:contentMiddle>
+								<m:contentRight>
+								<m:Button icon="sap-icon://sys-cancel" press="pressEliminarFactura"/>
+									<m:Button icon="sap-icon://log" press="LogOffPress"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader id="ohFac" binding="{path : 'myParam>/listConsultaResumenFactura'}" responsive="true" fullScreenOptimized="false"
+								icon="sap-icon://sales-order-item" title="Factura: {myParam>OC_ID_FACTURA}" backgroundDesign="Translucent"
+								intro="{myParam>RAZON_SOCIAL_ADQ} - {myParam>NOMBRE_COMERCIAL}" number="{myParam>TOTAL_IMP}" numberUnit="{myParam>MONEDA}">
+								<m:attributes>
+									<m:ObjectAttribute title="Fecha" text="{ path: 'myParam>OC_FECHA_EMISION'}"/>
+									<m:ObjectAttribute title="Hora" text="{myParam>OC_HORA}"/>
+									<m:ObjectAttribute title="Descuento" text="{ path: 'myParam>TOTAL_DESC'}"/>
+									<m:ObjectAttribute title="Tasa IGV" text="{ path: 'myParam>TASA_IGV'}"/>
+									<m:ObjectAttribute title="Versión UBL" text="{ path: 'myParam>VERSION_UBL'}"/>
+									<m:ObjectAttribute title="Fecha emisión" text="{ path: 'myParam>FECHA_EMISION'}"/>
+								</m:attributes>
+								<m:firstStatus>
+									<m:ObjectStatus text="{myParam>RUC_ADQ}" state="Information"/>
+								</m:firstStatus>
+								<m:secondStatus>
+									<m:ObjectStatus text="{myParam>OC_USUARIO}" state="Information"/>
+								</m:secondStatus>
+							</m:ObjectHeader>
+							<m:IconTabBar id="idTabBarFac" expanded="true" class="sapUiResponsiveContentPadding">
+								<m:items>
+									<m:IconTabFilter id="idIconBarItem" key="Item" text="Items Seleccionados a Facturar" 
+										count="{myParam>/listItemFacturasLenght}">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<tab:Table id="idTableItemFacturas" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemFacturas'}" visibleRowCount="8"
+														showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://paid-leave" alt="Cart" size="1.25rem"/>
+																<m:Title text="Items" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Title text="N° Seleccionados ( {myParam>/listItemFacturasLenght} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column width="6rem" hAlign="Center">
+																<m:Text text="Posición"/>
+																<tab:template>
+																	<m:Label text="{myParam>DE_POSICION}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="20rem" hAlign="Center">
+																<m:Text text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>DE_DESCRIPCION}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="5rem" hAlign="Center">
+																<m:Text text="Cantidad"/>
+																<tab:template>
+																	<Text text="{myParam>DE_CANTIDAD}"/>
+																</tab:template>
+															</tab:Column>
+																<tab:Column width="5rem" hAlign="Center">
+																<m:Text text="Cantidad a facturar"/>
+																<tab:template>
+																	<Text text="{myParam>DE_CANTIDAD_A_FACTURAR}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Precio"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>DE_PRECIO', formatter: '.convertirDecimal' }"
+																		unit="{myParam>DE_MONEDA}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="9rem" hAlign="Center">
+																<m:Text text="Valor Neto"/>
+																<tab:template>
+																	<m:ObjectNumber
+																		number="{ path: 'myParam>DE_SUBTOTAL', formatter: '.convertirDecimal' }"
+																		unit="{myParam>DE_MONEDA}"
+																		textAlign="Center"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{ path: 'myParam>DE_ESTADO', formatter: '.formatAvailableToObjectText' }"
+																		state="{ path: 'myParam>DE_ESTADO', formatter: '.formatAvailableToObjectState' }"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+									<m:IconTabFilter id="idIconBarDocumento" key="Documento" text="Documentos de sustento"
+										count="{myParam>/listDocAdjuntarFacLenght}">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<m:List id="idListDocumentos" items="{ path : 'myParam>/listDocAdjuntarFac'}">
+														<m:items>
+															<m:ObjectListItem intro="{myParam>NOMBRE_ADJ}" title="{ path: 'myParam>NOMBRE_DOC', formatter: '.documentoAsignado' }"
+																icon="{ path: 'myParam>FORMATO', formatter: '.documentoFormato' }" type="Active" press="pressDocumento"
+																number="{path: 'myParam>TAMANO', formatter: '.documentoValor'}" numberUnit="KB">
+																<m:attributes>
+																	<m:ObjectAttribute title="Formato" text="{myParam>FORMATO_DES}"/>
+																	<m:ObjectAttribute title="Fecha" text="{ path: 'myParam>FECHA_ADJ', formatter: '.fechaValor'}"/>
+																	<m:ObjectAttribute title="Hora" text="{ path: 'myParam>HORA_ADJ', formatter: '.horaValor'}"/>
+																</m:attributes>
+																<m:firstStatus>
+																	<m:ObjectStatus text="{myParam>TIPO}" state="{ path: 'myParam>TIPO', formatter: '.tipoFormato' }"/>
+																</m:firstStatus>
+																<m:secondStatus>
+																	<m:ObjectStatus text="{myParam>ESTADO}" state="{ path: 'myParam>ESTADO', formatter: '.estadoFormato' }"/>
+																</m:secondStatus>
+															</m:ObjectListItem>
+														</m:items>
+													</m:List>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+								</m:items>
+							</m:IconTabBar>
+						</m:content>
+						<m:footer></m:footer>
+					</m:Page>
+					<m:Page id="detail3" class="panel_1 clTitle" title="Detalle de la Posición - En Proceso">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title id="idTituloProceso" text="Detalle de la Posición - En Proceso" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button icon="sap-icon://nav-back" press="btnVolverDetail1"/>
+								</m:contentLeft>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEnProceso'}" responsive="true" fullScreenOptimized="true"
+								icon="sap-icon://my-sales-order" title="{myParam>rDescripcion}" backgroundDesign="Translucent" numberUnit="{myParam>rMoneda}"
+								number="{myParam>clistItemFiltroEnProcesoPrecio}">
+								<m:attributes>
+									<m:ObjectAttribute title="Valor Neto" text="{myParam>rValorNeto}"/>
+									<m:ObjectAttribute title="Moneda" text="{myParam>rMoneda}"/>
+									<m:ObjectAttribute title="Cantidad" text="{myParam>rCantidad}"/>
+								</m:attributes>
+								<m:statuses>
+									<m:ObjectStatus title="Estado" text="{myParam>rEstado}" state="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectState' }"/>
+								</m:statuses>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEnProceso'}" responsive="true" fullScreenOptimized="false"
+								title="Información Adicional" backgroundDesign="Translucent">
+								<m:ObjectAttribute title="N° Material SAP" text="{myParam>rNumMaterial}"/>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEnProceso'}" responsive="true" fullScreenOptimized="false" title="Entregar a"
+								intro="Dir. de Entrega: {myParam>rDireccionEntrega}" backgroundDesign="Translucent"></m:ObjectHeader>
+							<layout:Grid id="idGridEn" defaultSpan="L12 M12 S12">
+								<layout:content>
+									<m:VBox>
+										<tab:Table id="idTableItemCronogramaEnProceso" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemCronogramaEnProceso'}"
+											visibleRowCount="7" showNoData="No se hallaron Items.">
+											<tab:toolbar>
+												<m:Toolbar>
+													<core:Icon src="sap-icon://documents" alt="Cart" size="1.25rem"/>
+													<m:Title text="Cronogramas de Entregas" titleStyle="H3"/>
+													<m:ToolbarSpacer/>
+													<m:Title text="N° ( {myParam>/listTotalItemCronogramaEnProceso/rCampoCronogramaEnProceso} )" titleStyle="H4"/>
+												</m:Toolbar>
+											</tab:toolbar>
+											<tab:noData>
+												<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+											</tab:noData>
+											<tab:columns>
+												<tab:Column id="idColumCronogramaEnProceso1" width="13rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEnProceso1" text="Cantidad"/>
+													<tab:template>
+														<m:Text text="{myParam>clistItemCronogramaEnProcesoCantidad}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaEnProceso2" width="15rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEnProceso2" text="Fecha de Entrega"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaEnProcesoFechaEntrega', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaEnProceso3" width="15rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEnProceso3" text="Fecha de Entrega Estimada"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaEnProcesoFechaEstimada', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaEnProceso4" width="14rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEnProceso4" text="Estado"/>
+													<tab:template>
+														<m:ObjectStatus text="{myParam>clistItemCronogramaEnProcesoEstado}"
+															state="{ path: 'myParam>clistItemCronogramaEnProcesoEstado', formatter: '.formatAvailableToObjectState' }"/>
+													</tab:template>
+												</tab:Column>
+											</tab:columns>
+										</tab:Table>
+									</m:VBox>
+								</layout:content>
+							</layout:Grid>
+						</m:content>
+						<m:footer>
+							<m:Bar></m:Bar>
+						</m:footer>
+					</m:Page>
+					<m:Page id="detail33" class="panel_1 clTitle" title="Detalle de la Posición - Pendiente">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title id="idTituloPendiente" text="Detalle de la Posición - Pendiente" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button icon="sap-icon://nav-back" press="btnVolverDetail1"/>
+								</m:contentLeft>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEnProceso'}" responsive="true" fullScreenOptimized="true"
+								icon="sap-icon://my-sales-order" title="{myParam>rDescripcion}" backgroundDesign="Translucent" numberUnit="{myParam>rMoneda}"
+								number="{myParam>clistItemFiltroEnProcesoPrecio}">
+								<m:attributes>
+									<m:ObjectAttribute title="Valor Neto" text="{myParam>rValorNeto}"/>
+									<m:ObjectAttribute title="Moneda" text="{myParam>rMoneda}"/>
+									<m:ObjectAttribute title="Cantidad" text="{myParam>rCantidad}"/>
+								</m:attributes>
+								<m:statuses>
+									<m:ObjectStatus title="Estado" text="{myParam>rEstado}" state="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectState' }"/>
+								</m:statuses>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEnProceso'}" responsive="true" fullScreenOptimized="false"
+								title="Información Adicional" backgroundDesign="Translucent">
+								<m:ObjectAttribute title="N° Material SAP" text="{myParam>rNumMaterial}"/>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEnProceso'}" responsive="true" fullScreenOptimized="false" title="Entregar a"
+								intro="Dir. de Entrega: {myParam>rDireccionEntrega}" backgroundDesign="Translucent"></m:ObjectHeader>
+							<layout:Grid id="idGridPro" defaultSpan="L12 M12 S12">
+								<layout:content>
+									<m:VBox>
+										<tab:Table id="idTableItemCronogramaPendiente" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemCronogramaEnProceso'}"
+											visibleRowCount="7" showNoData="No se hallaron Items.">
+											<tab:toolbar>
+												<m:Toolbar>
+													<core:Icon src="sap-icon://documents" alt="Cart" size="1.25rem"/>
+													<m:Title text="Cronogramas de Entregas" titleStyle="H3"/>
+													<m:ToolbarSpacer/>
+													<m:Title text="N° ( {myParam>/listTotalItemCronogramaEnProceso/rCampoCronogramaEnProceso} )" titleStyle="H4"/>
+												</m:Toolbar>
+											</tab:toolbar>
+											<tab:noData>
+												<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+											</tab:noData>
+											<tab:columns>
+												<tab:Column width="13rem" hAlign="Center">
+													<m:Text text="Cantidad"/>
+													<tab:template>
+														<m:Text text="{myParam>clistItemCronogramaEnProcesoCantidad}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="15rem" hAlign="Center">
+													<m:Text text="Fecha de Entrega"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaEnProcesoFechaEntrega', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="15rem" hAlign="Center">
+													<m:Text text="Fecha de Entrega Estimada"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaEnProcesoFechaEstimada', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column width="14rem" hAlign="Center">
+													<m:Text text="Estado"/>
+													<tab:template>
+														<m:ObjectStatus text="{myParam>clistItemCronogramaEnProcesoEstado}"
+															state="{ path: 'myParam>clistItemCronogramaEnProcesoEstado', formatter: '.formatAvailableToObjectState' }"/>
+													</tab:template>
+												</tab:Column>
+											</tab:columns>
+										</tab:Table>
+									</m:VBox>
+								</layout:content>
+							</layout:Grid>
+						</m:content>
+						<m:footer>
+							<m:Bar></m:Bar>
+						</m:footer>
+					</m:Page>
+					<m:Page id="detail4" class="panel_1 clTitle" title="Detalle de la Posición - Entregado">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title id="idTituloEntregado" text="Detalle de la Posición - Entregado" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button icon="sap-icon://nav-back" press="btnVolverDetail1"/>
+								</m:contentLeft>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEntregado'}" responsive="true" fullScreenOptimized="true"
+								icon="sap-icon://my-sales-order" title="{myParam>rDescripcion}" backgroundDesign="Translucent"
+								number="{myParam>clistItemFiltroEntregadoPrecio}" numberUnit="{myParam>rMoneda}">
+								<m:attributes>
+									<m:ObjectAttribute title="Valor Neto" text="{myParam>rValorNeto}"/>
+									<m:ObjectAttribute title="Moneda" text="{myParam>rMoneda}"/>
+									<m:ObjectAttribute title="Cantidad" text="{myParam>rCantidad}"/>
+								</m:attributes>
+								<m:statuses>
+									<m:ObjectStatus title="Estado" text="{myParam>rEstado}" state="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectState' }"/>
+								</m:statuses>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEntregado'}" responsive="true" fullScreenOptimized="false"
+								title="Información Adicional" backgroundDesign="Translucent">
+								<m:attributes>
+									<m:ObjectAttribute title="N° Material SAP" text="{myParam>rNumMaterial}"/>
+									<m:ObjectAttribute title="N° Guía Remisión" text="{myParam>rGuiaRemision}"/>
+									<m:ObjectAttribute/>
+									<m:ObjectAttribute title="N° Doc. Material" text="{myParam>rDocMaterial}"/>
+									<m:ObjectAttribute title="Fecha de Registro" text="{myParam>rFechaRegistro}"/>
+									<m:ObjectAttribute/>
+								</m:attributes>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenEntregado'}" responsive="true" fullScreenOptimized="false" title="Entregar a"
+								intro="Dir. de Entrega: {myParam>rDireccionEntrega}" backgroundDesign="Translucent"></m:ObjectHeader>
+							<layout:Grid id="idGridEnt" defaultSpan="L12 M12 S12">
+								<layout:content>
+									<m:VBox>
+										<tab:Table id="idTableItemCronogramaEntregado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemCronogramaEntregado'}"
+											visibleRowCount="6" showNoData="No se hallaron Items.">
+											<tab:toolbar>
+												<m:Toolbar>
+													<core:Icon src="sap-icon://documents" alt="Cart" size="1.25rem"/>
+													<m:Title text="Cronogramas de Entregas" titleStyle="H3"/>
+													<m:ToolbarSpacer/>
+													<m:Title text="N° ( {myParam>/listTotalItemCronogramaEntregado/rCampoCronogramaEntregado} )" titleStyle="H4"/>
+												</m:Toolbar>
+											</tab:toolbar>
+											<tab:noData>
+												<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+											</tab:noData>
+											<tab:columns>
+												<tab:Column id="idColumCronogramaEntregado1" width="13rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEntregado1" text="Cantidad"/>
+													<tab:template>
+														<m:Text text="{myParam>clistItemCronogramaEntregadoCantidad}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaEntregado2" width="15rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEntregado2" text="Fecha de Entrega"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaEntregadoFechaEntrega', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaEntregado3" width="15rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEntregado3" text="Fecha de Entrega Estimada"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaEntregadoFechaEstimada', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaEntregado4" width="14rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaEntregado4" text="Estado"/>
+													<tab:template>
+														<m:ObjectStatus text="{myParam>clistItemCronogramaEntregadoEstado}"
+															state="{ path: 'myParam>clistItemCronogramaEntregadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+													</tab:template>
+												</tab:Column>
+											</tab:columns>
+										</tab:Table>
+									</m:VBox>
+								</layout:content>
+							</layout:Grid>
+						</m:content>
+						<m:footer>
+							<m:Bar></m:Bar>
+						</m:footer>
+					</m:Page>
+					<m:Page id="detail5" class="panel_1 clTitle" title="Detalle de la Posición - Finalizado">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title id="idTituloAceptado" text="Detalle de la Posición - Finalizado" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button icon="sap-icon://nav-back" press="btnVolverDetail1"/>
+								</m:contentLeft>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenAceptado'}" responsive="true" fullScreenOptimized="true"
+								icon="sap-icon://my-sales-order" title="{myParam>rDescripcion}" backgroundDesign="Translucent" numberUnit="{myParam>rMoneda}"
+								number="{myParam>clistItemFiltroAceptadoPrecio}">
+								<m:attributes>
+									<m:ObjectAttribute title="Valor Neto" text="{myParam>rValorNeto}"/>
+									<m:ObjectAttribute title="Hoja entrada" text="{myParam>clistItemFiltroAceptadoHojaEntrada}"/>
+									<m:ObjectAttribute title="Cantidad" text="{myParam>rCantidad}"/>
+								</m:attributes>
+								<m:statuses>
+									<m:ObjectStatus title="Estado" text="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectText' }"
+										state="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectState' }"/>
+								</m:statuses>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenAceptado'}" responsive="true" fullScreenOptimized="false"
+								title="Información Adicional" backgroundDesign="Translucent">
+								<m:attributes>
+									<m:ObjectAttribute title="Servicio" text="{myParam>rServicio}"/>
+									<m:ObjectAttribute title="N° Aceptación" text="{myParam>rNumAceptacion}"/>
+									<m:ObjectAttribute/>
+									<m:ObjectAttribute title="N° Doc. Material" text="{myParam>rDocMaterial}"/>
+									<m:ObjectAttribute title="Fecha de Aceptación" text="{myParam>rFechaAceptacion}"/>
+									<m:ObjectAttribute/>
+								</m:attributes>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenAceptado'}" responsive="true" fullScreenOptimized="false" title="Entregar a"
+								intro="Dir. de Entrega: {myParam>rDireccionEntrega}" backgroundDesign="Translucent"></m:ObjectHeader>
+							<layout:Grid id="idGridAce" defaultSpan="L12 M12 S12">
+								<layout:content>
+									<m:VBox>
+										<tab:Table id="idTableItemCronogramaAceptado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemCronogramaAceptado'}"
+											visibleRowCount="6" showNoData="No se hallaron Items.">
+											<tab:toolbar>
+												<m:Toolbar>
+													<core:Icon src="sap-icon://documents" alt="Cart" size="1.25rem"/>
+													<m:Title text="Cronogramas de Entregas" titleStyle="H3"/>
+													<m:ToolbarSpacer/>
+													<m:Title text="N° ( {myParam>/listTotalItemCronogramaAceptado/rCampoCronogramaAceptado} )" titleStyle="H4"/>
+												</m:Toolbar>
+											</tab:toolbar>
+											<tab:noData>
+												<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+											</tab:noData>
+											<tab:columns>
+												<tab:Column id="idColumCronogramaAceptado1" width="13rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaAceptado1" text="Cantidad"/>
+													<tab:template>
+														<m:Text text="{myParam>clistItemCronogramaAceptadoCantidad}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaAceptado2" width="15rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaAceptado2" text="Fecha de Entrega"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaAceptadoFechaEntrega', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaAceptado3" width="15rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaAceptado3" text="Fecha de Entrega Estimada"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaAceptadoFechaEstimada', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaAceptado4" width="14rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaAceptado4" text="Estado"/>
+													<tab:template>
+														<m:ObjectStatus text="{myParam>clistItemCronogramaAceptadoEstado}"
+															state="{ path: 'myParam>clistItemCronogramaAceptadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+													</tab:template>
+												</tab:Column>
+											</tab:columns>
+										</tab:Table>
+									</m:VBox>
+								</layout:content>
+							</layout:Grid>
+						</m:content>
+						<m:footer>
+							<m:Bar></m:Bar>
+						</m:footer>
+					</m:Page>
+					<m:Page id="detail6" class="panel_1 clTitle" title="Detalle de la Posición - Finalizado">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title id="idTituloFacturado" text="Detalle de la Posición - Finalizado" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button icon="sap-icon://nav-back" press="btnVolverDetail1"/>
+								</m:contentLeft>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenFacturado'}" responsive="true" fullScreenOptimized="true"
+								icon="sap-icon://my-sales-order" title="{myParam>rDescripcion}" backgroundDesign="Translucent"
+								number="{myParam>clistItemFiltroFacturadoPrecio}" numberUnit="{myParam>rMoneda}">
+								<m:attributes>
+									<m:ObjectAttribute title="Valor Neto" text="{myParam>rValorNeto}"/>
+									<m:ObjectAttribute title="Moneda" text="{myParam>rMoneda}"/>
+									<m:ObjectAttribute title="Cantidad" text="{myParam>rCantidad}"/>
+								</m:attributes>
+								<m:statuses>
+									<m:ObjectStatus title="Estado" text="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectText' }"
+										state="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectState' }"/>
+								</m:statuses>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenFacturado'}" responsive="true" fullScreenOptimized="false"
+								title="Información Adicional" backgroundDesign="Translucent">
+								<m:attributes>
+									<m:ObjectAttribute title="Servicio" text="{myParam>rServicio}"/>
+									<m:ObjectAttribute title="N° Factura SUNAT" text="{myParam>rNumFacturaSunat}"/>
+									<m:ObjectAttribute/>
+									<m:ObjectAttribute title="N° Doc. SAP" text="{myParam>rNumDocSap}"/>
+									<m:ObjectAttribute/>
+									<m:ObjectAttribute/>
+								</m:attributes>
+							</m:ObjectHeader>
+							<m:ObjectHeader binding="{path : 'myParam>/listConsultaResumenFacturado'}" responsive="true" fullScreenOptimized="false" title="Entregar a"
+								intro="Dir. de Entrega: {myParam>rDireccionEntrega}" backgroundDesign="Translucent"></m:ObjectHeader>
+							<layout:Grid defaultSpan="L12 M12 S12">
+								<layout:content>
+									<m:VBox>
+										<tab:Table id="idTableItemCronogramaFacturado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemCronogramaFacturado'}"
+											visibleRowCount="6" showNoData="No se hallaron Items.">
+											<tab:toolbar>
+												<m:Toolbar>
+													<core:Icon src="sap-icon://documents" alt="Cart" size="1.25rem"/>
+													<m:Title text="Detalle de Facturas" titleStyle="H3"/>
+													<m:ToolbarSpacer/>
+													<m:Title text="N° ( {myParam>/listTotalItemCronogramaFacturado/rCampoCronogramaFacturado} )" titleStyle="H4"/>
+												</m:Toolbar>
+											</tab:toolbar>
+											<tab:noData>
+												<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+											</tab:noData>
+											<tab:columns>
+												<tab:Column id="idColumCronogramaFacturado3" width="8rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaFacturado3" text="Fecha de Factura"/>
+													<tab:template>
+														<m:Text
+															text="{ path: 'myParam>clistItemCronogramaFacturadoFechaFactura', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+															wrapping="false"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaFacturado4" width="9rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaFacturado4" text="Cantidad Facturado"/>
+													<tab:template>
+														<m:Text text="{myParam>clistItemCronogramaFacturadoCantidadFacturado}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaFacturado5" width="9rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaFacturado5" text="Valor Facturado"/>
+													<tab:template>
+														<m:ObjectNumber number="{myParam>clistItemCronogramaFacturadoValorFacturado}"
+														unit="{myParam>clistItemCronogramaFacturadoMoneda}"
+															textAlign="Center"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaFacturado6" width="11rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaFacturado6" text="Tipo de Impuesto"/>
+													<tab:template>
+														<m:Text text="{myParam>clistItemCronogramaFacturadoTipoImpuesto}"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaFacturado7" width="9rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaFacturado7" text="Valor Impuesto"/>
+													<tab:template>
+														<m:ObjectNumber number="{myParam>clistItemCronogramaFacturadoValorImpuesto}"
+														unit="{myParam>clistItemCronogramaFacturadoMoneda}"
+														textAlign="Center"/>
+													</tab:template>
+												</tab:Column>
+												<tab:Column id="idColumCronogramaFacturado8" width="10rem" hAlign="Center">
+													<m:Text id="idTextColumCronogramaFacturado8" text="Estado"/>
+													<tab:template>
+														<m:ObjectStatus text="{myParam>clistItemCronogramaFacturadoEstado}"
+															state="{ path: 'myParam>clistItemCronogramaFacturadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+													</tab:template>
+												</tab:Column>
+											</tab:columns>
+										</tab:Table>
+									</m:VBox>
+								</layout:content>
+							</layout:Grid>
+						</m:content>
+						<m:footer>
+							<m:Bar></m:Bar>
+						</m:footer>
+					</m:Page>
+				</m:detailPages>
+			</m:SplitApp>
+		</m:pages>
+	</m:App>
+</mvc:View>

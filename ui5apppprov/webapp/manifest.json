@@ -1,0 +1,320 @@
+{
+  "_version": "1.32.0",
+  "sap.app": {
+    "id": "nspprov.ui5apppprov",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.97.0",
+      "libs": {
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "nspprov.ui5apppprov.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$direct"
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "nspprov.ui5apppprov.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "RouteVista_Menu_Principal",
+          "pattern": "RouteVista_Menu_Principal",
+          "target": [
+            "TargetVista_Menu_Principal"
+          ]
+        },		
+        {
+            "name": "Vista_Login",
+            "pattern": "Vista_Login",
+            "titleTarget": "Vista_Login",
+            "greedy": false,
+            "target": [
+                "Vista_Login"
+            ]
+        },
+        {
+            "name": "Vista_Menu_Principal",
+            "pattern": "Vista_Menu_Principal",
+            "titleTarget": "Vista_Menu_Principal",
+            "greedy": false,
+            "target": [
+                "Vista_Menu_Principal"
+            ]
+        },
+        {
+            "name": "Vista_Administrador_Usuarios",
+            "pattern": "Vista_Administrador_Usuarios",
+            "titleTarget": "Vista_Administrador_Usuarios",
+            "greedy": false,
+            "target": [
+                "Vista_Administrador_Usuarios"
+            ]
+        },
+        {
+            "name": "Vista_Control_Factura",
+            "pattern": "Vista_Control_Factura",
+            "titleTarget": "Vista_Control_Factura",
+            "greedy": false,
+            "target": [
+                "Vista_Control_Factura"
+            ]
+        },
+        {
+            "name": "Vista_Orden_Compra",
+            "pattern": "Vista_Orden_Compra",
+            "titleTarget": "Vista_Orden_Compra",
+            "greedy": false,
+            "target": [
+                "Vista_Orden_Compra"
+            ]
+        },
+        {
+            "name": "Vista_Registro_Consignacion",
+            "pattern": "Vista_Registro_Consignacion",
+            "titleTarget": "Vista_Registro_Consignacion",
+            "greedy": false,
+            "target": [
+                "Vista_Registro_Consignacion"
+            ]
+        },
+        {
+            "name": "Vista_Registro_Contratista",
+            "pattern": "Vista_Registro_Contratista",
+            "titleTarget": "Vista_Registro_Contratista",
+            "greedy": false,
+            "target": [
+                "Vista_Registro_Contratista"
+            ]
+        },
+        {
+            "name": "Vista_Registro_DevSinPedido",
+            "pattern": "Vista_Registro_DevSinPedido",
+            "titleTarget": "Vista_Registro_DevSinPedido",
+            "greedy": false,
+            "target": [
+                "Vista_Registro_DevSinPedido"
+            ]
+        },
+        {
+            "name": "Vista_Registro_Factura",
+            "pattern": "Vista_Registro_Factura",
+            "titleTarget": "Vista_Registro_Factura",
+            "greedy": false,
+            "target": [
+                "Vista_Registro_Factura"
+            ]
+        },
+        {
+            "name": "Vista_Registro_Factura_Manual",
+            "pattern": "Vista_Registro_Factura_Manual",
+            "titleTarget": "Vista_Registro_Factura_Manual",
+            "greedy": false,
+            "target": [
+                "Vista_Registro_Factura_Manual"
+            ]
+        },
+        {
+            "name": "Vista_Registro_Factura_Sin_Vale",
+            "pattern": "Vista_Registro_Factura_Sin_Vale",
+            "titleTarget": "Vista_Registro_Factura_Sin_Vale",
+            "greedy": false,
+            "target": [
+                "Vista_Registro_Factura_Sin_Vale"
+            ]
+        },
+        {
+            "name": "Vista_Registro_PedConDev",
+            "pattern": "Vista_Registro_PedConDev",
+            "titleTarget": "Vista_Registro_PedConDev",
+            "greedy": false,
+            "target": [
+                "Vista_Registro_PedConDev"
+            ]
+        },
+        {
+            "name": "Vista_Reporte_Consiganciones",
+            "pattern": "Vista_Reporte_Consiganciones",
+            "titleTarget": "Vista_Reporte_Consiganciones",
+            "greedy": false,
+            "target": [
+                "Vista_Reporte_Consiganciones"
+            ]
+        },
+        {
+            "name": "Vista_Reporte_Fac_Registradas",
+            "pattern": "Vista_Reporte_Fac_Registradas",
+            "titleTarget": "Vista_Reporte_Fac_Registradas",
+            "greedy": false,
+            "target": [
+                "Vista_Reporte_Fac_Registradas"
+            ]
+        },
+        {
+            "name": "Vista_Reporte_Factura",
+            "pattern": "Vista_Reporte_Factura",
+            "titleTarget": "Vista_Reporte_Factura",
+            "greedy": false,
+            "target": [
+                "Vista_Reporte_Factura"
+            ]
+        },
+        {
+            "name": "Vista_Reporte_Vale",
+            "pattern": "Vista_Reporte_Vale",
+            "titleTarget": "Vista_Reporte_Vale",
+            "greedy": false,
+            "target": [
+                "Vista_Reporte_Vale"
+            ]
+        }
+      ],
+      "targets": {
+        "TargetVista_Menu_Principal": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Vista_Menu_Principal",
+          "viewName": "Vista_Menu_Principal"
+        },		
+        "Vista_Login": {
+            "viewType": "XML",
+            "transition": "slide",
+            "clearControlAggregation": false,
+            "viewName": "Vista_Login"
+        },
+        "Vista_Administrador_Usuarios": {
+            "viewType": "XML",
+            "viewName": "Vista_Administrador_Usuarios"
+        },
+        "Vista_Control_Factura": {
+            "viewType": "XML",
+            "viewName": "Vista_Control_Factura"
+        },
+        "Vista_Orden_Compra": {
+            "viewType": "XML",
+            "viewName": "Vista_Orden_Compra"
+        },
+        "Vista_Registro_Consignacion": {
+            "viewType": "XML",
+            "viewName": "Vista_Registro_Consignacion"
+        },
+        "Vista_Registro_Contratista": {
+            "viewType": "XML",
+            "viewName": "Vista_Registro_Contratista"
+        },
+        "Vista_Registro_DevSinPedido": {
+            "viewType": "XML",
+            "viewName": "Vista_Registro_DevSinPedido"
+        },
+        "Vista_Registro_Factura": {
+            "viewType": "XML",
+            "viewName": "Vista_Registro_Factura"
+        },
+        "Vista_Registro_Factura_Manual": {
+            "viewType": "XML",
+            "viewName": "Vista_Registro_Factura_Manual"
+        },
+        "Vista_Registro_Factura_Sin_Vale": {
+            "viewType": "XML",
+            "viewName": "Vista_Registro_Factura_Sin_Vale"
+        },
+        "Vista_Registro_PedConDev": {
+            "viewType": "XML",
+            "viewName": "Vista_Registro_PedConDev"
+        },
+        "Vista_Reporte_Consiganciones": {
+            "viewType": "XML",
+            "viewName": "Vista_Reporte_Consiganciones"
+        },
+        "Vista_Reporte_Fac_Registradas": {
+            "viewType": "XML",
+            "viewName": "Vista_Reporte_Fac_Registradas"
+        },
+        "Vista_Reporte_Factura": {
+            "viewType": "XML",
+            "viewName": "Vista_Reporte_Factura"
+        },
+        "Vista_Reporte_Vale": {
+            "viewType": "XML",
+            "viewName": "Vista_Reporte_Vale"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "nspprov.ui5apppprov.view.Vista_Menu_Principal",
+      "type": "XML",
+      "async": true,
+      "id": "Vista_Menu_Principal"
+    }
+  }
+}

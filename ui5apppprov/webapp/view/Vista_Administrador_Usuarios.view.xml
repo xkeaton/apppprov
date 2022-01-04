@@ -1,0 +1,421 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:m="sap.m" xmlns:tnt="sap.tnt" xmlns:a="sap.f"
+	xmlns:layout="sap.ui.layout" xmlns:semantic="sap.f.semantic" xmlns:file="sap.ui.unified" xmlns:tab="sap.ui.table" xmlns:ux="sap.uxap"
+	controllerName="nspprov.ui5apppprov.controller.Vista_Administrador_Usuarios" xmlns:html="http://www.w3.org/1999/xhtml">
+	<m:App id="app">
+		<m:pages>
+			<m:Page title="Title">
+				<m:customHeader>
+					<m:Bar>
+						<m:contentLeft>
+							<m:Button id="idNav" icon="sap-icon://nav-back" press="btnInicio"/>
+							<m:Label text="Ruc Proveedor: {myParam>/usuarioLogin}"/>
+						</m:contentLeft>
+						<m:contentMiddle>
+							<m:Title level="H3" text="Administración de Proveedores"/>
+						</m:contentMiddle>
+					</m:Bar>
+				</m:customHeader>
+				<m:content>
+					<m:IconTabBar id="idTabBarFac" expanded="true" class="sapUiResponsiveContentPadding" select="handleIconTabBarSelect">
+						<m:items>
+							<m:IconTabFilter key="Usuarios" text="Proveedores" count="{myParam>/listUsuarios/length}" icon="sap-icon://customer">
+								<tab:Table id="idTableUser" sort="sortDeliveryDate" rows="{ path: 'myParam>/listUsuarios'}" visibleRowCount="12"
+									showNoData="No se hallaron los Proveedores." width="100%">
+									<tab:toolbar>
+										<m:Toolbar height="auto" class="sapUiSmallMargin">
+											<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+											<m:Title id="idConteoUsers" text="Tabla de Proveedores ({myParam>/listUsuarios/length})" titleStyle="H3"/>
+											<m:ToolbarSpacer/>
+											<layout:HorizontalLayout>
+												<CheckBox id="idChaeckAdministrador" text="Administrador" select="funcionAdministrador" valueState="Warning" selected="false"
+													editable="true"/>
+												<CheckBox id="idChaeckEstandar" text="Estándar" select="funcionEstandar" valueState="Warning" selected="false" editable="true"/>
+												<CheckBox id="idChaeckAvanzado" text="Avanzado" select="funcionAvanzado" valueState="Warning" selected="false" editable="true"/>
+											</layout:HorizontalLayout>
+											<m:Input id="idTxtRuc" value="" type="Text" placeholder="Ingrese RUC" liveChange="btnBuscarRuc" required="true" width="20%" editable="true"
+												maxLength="16"/>
+											<!--<Button id="idBuscarRuc" text="Buscar" type="Emphasized" icon="sap-icon://search" press="btnBuscarRuc"/>-->
+										</m:Toolbar>
+									</tab:toolbar>
+									<tab:noData>
+										<m:Link class="sapUiMediumMargin" text="No se hallaron los Proveedores."/>
+									</tab:noData>
+									<tab:columns>
+										<tab:Column width="8%" hAlign="Center">
+											<m:Text text="Usuario"/>
+											<tab:template>
+												<m:Label text="{myParam>US_USUARIO}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="21%" hAlign="Center">
+											<m:Text text="Autorización"/>
+											<tab:template>
+												<layout:HorizontalLayout>
+													<m:CheckBox text="Administrador" select="evtSeleccionarAut" valueState="Warning"
+														selected="{ path: 'myParam>AUTORIZACION', formatter: '.formatTipoCheck1' }" editable="false"/>
+													<m:CheckBox text="Estándar" select="evtSeleccionarAut" valueState="Warning"
+														selected="{ path: 'myParam>AUTORIZACION', formatter: '.formatTipoCheck2' }" editable="false"/>
+														<m:CheckBox text="Avanzado" select="evtSeleccionarAut" valueState="Warning"
+														selected="{ path: 'myParam>AUTORIZACION', formatter: '.formatTipoCheck3' }" editable="false"/>
+												</layout:HorizontalLayout>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="0%" hAlign="Center" visible="false">
+											<m:Text text=""/>
+											<tab:template>
+												<m:Label text="{myParam>AUTORIZACION}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Registro de Suministro y Servicios"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_1',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Registro por misceláneos"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_2',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>
+										<!--<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Registro de consignaciones"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_3',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>-->
+										<!--<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Devolución sin pedido"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_4',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>-->
+										<!--<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Registro de contratista"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_5',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>-->
+										<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Registro Nota Cred. con pedido"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_6',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Reporte de factura"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_7',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>
+										<!--<tab:Column width="11.75%" hAlign="Center">
+											<m:Text text="Reporte de consignaciones"/>
+											<tab:template>
+												<a:Avatar src="sap-icon://accept" displaySize="XS" visible="{path: 'myParam>SEC_8',formatter: '.txtVisibleForm'}" displayShape="Square"/>
+											</tab:template>
+										</tab:Column>-->
+										<tab:Column width="9%" hAlign="Center">
+											<m:Text text="Acción"/>
+											<tab:template>
+												<Toolbar height="auto">
+													<Button text="Editar" tooltip="Editar Proveedor" icon="sap-icon://edit" type="Accept" width="100%" press="editarUsuario"/>
+												</Toolbar>
+											</tab:template>
+										</tab:Column>
+									</tab:columns>
+								</tab:Table>
+							</m:IconTabFilter>
+							<m:IconTabFilter key="Empresas" text="Empresas" count="{myParam>/listEmpresa/length}" icon="sap-icon://building">
+								<tab:Table id="idTableEmpresa" sort="sortDeliveryDate" rows="{ path: 'myParam>/listEmpresa'}" visibleRowCount="12"
+									showNoData="No se hallaron las empresas." width="100%">
+									<tab:toolbar>
+										<Toolbar>
+											<core:Icon src="sap-icon://citizen-connect" alt="Cart" size="1.25rem"/>
+											<Title text="Tabla de empresas ({myParam>/listEmpresa/length})" titleStyle="H3"/>
+											<ToolbarSpacer/>
+											<m:Input id="idTxtEmp" value="" type="Text" placeholder="Ingrese Empresa" liveChange=".handleLiveChange('idTableEmpresa',$event)"
+												required="false" width="20%" editable="true" maxLength="16"/>
+											<Button text="Añadir Empresa" type="Emphasized" icon="sap-icon://sys-add" press="onPressCrearEmpresa"/>
+										</Toolbar>
+									</tab:toolbar>
+									<tab:noData>
+										<Link class="sapUiMediumMargin" text="No se hallaron las empresas."/>
+									</tab:noData>
+									<tab:columns>
+										<tab:Column width="15%" hAlign="Center">
+											<Text text="Usuario"/>
+											<tab:template>
+												<Label text="{myParam>RUC_EM}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="40%" hAlign="Center">
+											<Text text="Descripción"/>
+											<tab:template>
+												<Label text="{myParam>DES_EM}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="25%" hAlign="Center">
+											<Text text="Sociedad"/>
+											<tab:template>
+												<Label text="{myParam>SOC_EM}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Acción"/>
+											<tab:template>
+												<Toolbar height="auto">
+													<Button text="Editar" tooltip="Editar Empresa" icon="sap-icon://edit" type="Accept" width="50%" press="editarEmpresa"/>
+													<Button text="Eliminar" tooltip="Eliminar Empresa" icon="sap-icon://delete" type="Reject" width="50%" press="eliminarEmpresa"/>
+												</Toolbar>
+											</tab:template>
+										</tab:Column>
+									</tab:columns>
+								</tab:Table>
+							</m:IconTabFilter>
+							<m:IconTabFilter key="Servicios" text="Servicios" count="{myParam>/listServicios/length}" icon="sap-icon://official-service">
+								<m:content>
+									<tab:Table id="idTableServicios" sort="sortDeliveryDate" rows="{ path: 'myParam>/listServicios'}" visibleRowCount="8"
+										showNoData="No se hallaron Servicios." width="100%">
+										<tab:toolbar>
+											<m:Toolbar>
+												<core:Icon src="sap-icon://official-service" alt="Cart" size="1.25rem"/>
+												<m:Title text="Tabla de servicios ({myParam>/listServicios/length})" titleStyle="H3"/>
+												<!--<ToolbarSpacer/>
+												<Button text="Descargar facturas registradas" icon="sap-icon://excel-attachment" press="btnDescargarFacturasTotal" type="Emphasized"/>-->
+											</m:Toolbar>
+										</tab:toolbar>
+										<tab:noData>
+											<m:Link class="sapUiMediumMargin" text="No se hallaron servicios."/>
+										</tab:noData>
+										<tab:columns>
+											<tab:Column width="50%" hAlign="Center">
+												<m:Text text="Servicio"/>
+												<tab:template>
+													<m:Label text="{ path: 'myParam>SERVICIO', formatter: '.formatNombreServicio' }"/>
+												</tab:template>
+											</tab:Column>
+											<tab:Column width="20%" hAlign="Center">
+												<m:Text text="Estado"/>
+												<tab:template>
+													<tnt:InfoLabel id="il8" text="{ path: 'myParam>ESTADO', formatter: '.formatoEstadoSunatText' }"
+														colorScheme="{ path: 'myParam>ESTADO', formatter: '.formatoEstadoSunatType' }" displayOnly="true"/>
+												</tab:template>
+											</tab:Column>
+											<tab:Column width="30%" hAlign="Center">
+												<m:Text text="Acción"/>
+												<tab:template>
+													<m:Button id="idInhabilitarSunat" text="{ path: 'myParam>SERVICIO', formatter: '.formatoEstadoTextBoton' }"
+														icon="{ path: 'myParam>SERVICIO', formatter: '.formatoEstadoIconBoton' }" type="Accept" press="pressActualizarServicio"/>
+												</tab:template>
+											</tab:Column>
+										</tab:columns>
+									</tab:Table>
+								</m:content>
+							</m:IconTabFilter>
+							<m:IconTabFilter key="Repositorio" text="Repositorio" icon="sap-icon://document" visible="false">
+								<m:content>
+									<m:Label class="clTitle" text="Eliminar - Document Service"/>
+									<m:Input id="idRDocumento" width="50%" value="" placeholder="Nombre del Documento" maxLength="50"></m:Input>
+									<m:Button width="50%" text="Eliminar" icon="sap-icon://delete" type="Emphasized" press="btnEliminarDoc"></m:Button>
+								</m:content>
+							</m:IconTabFilter>
+							<m:IconTabFilter key="Detraccion" text="Detracciones" count="{myParam>/listDetraccion/length}" icon="sap-icon://document-text">
+								<tab:Table id="idTableDetraccion" sort="sortDeliveryDate" rows="{ path: 'myParam>/listDetraccion'}" visibleRowCount="12"
+									showNoData="No se hallaron las detracciones." width="100%">
+									<tab:toolbar>
+										<Toolbar>
+											<core:Icon src="sap-icon://citizen-connect" alt="Cart" size="1.25rem"/>
+											<Title text="Tabla de detracción ({myParam>/listDetraccion/length})" titleStyle="H3"/>
+											<ToolbarSpacer/>
+											<m:Input id="idTxtDetra" value="" type="Text" placeholder="Ingrese detracción" liveChange=".handleLiveChange2('idTableDetraccion',$event)"
+												required="false" width="20%" editable="true" maxLength="16"/>
+											<Button text="Añadir detracción" type="Emphasized" icon="sap-icon://sys-add" press="onPressCrearDetraccion"/>
+										</Toolbar>
+									</tab:toolbar>
+									<tab:noData>
+										<Link class="sapUiMediumMargin" text="No se hallaron las detracciones."/>
+									</tab:noData>
+									<tab:columns>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Número"/>
+											<tab:template>
+												<Label text="{myParam>NUMTP}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="40%" hAlign="Center">
+											<Text text="Descripción"/>
+											<tab:template>
+												<Label text="{myParam>NTBEZ}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Prioridad"/>
+											<tab:template>
+												<Label text="{myParam>PRIORIDAD}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Acción"/>
+											<tab:template>
+												<Toolbar height="auto">
+													<Button text="Editar" tooltip="Editar detracción" icon="sap-icon://edit" type="Accept" width="50%" press="editarDetraccion"/>
+													<Button text="Eliminar" tooltip="Eliminar detracción" icon="sap-icon://delete" type="Reject" width="50%" press="eliminarDetraccion"/>
+												</Toolbar>
+											</tab:template>
+										</tab:Column>
+									</tab:columns>
+								</tab:Table>
+							</m:IconTabFilter>
+							<m:IconTabFilter key="MatDetraccion" text="Materias Det." count="{myParam>/listMatDetraccion/length}" icon="sap-icon://course-program">
+								<tab:Table id="idTableMatDetraccion" sort="sortDeliveryDate" rows="{ path: 'myParam>/listMatDetraccion'}" visibleRowCount="12"
+									showNoData="No se hallaron las materias de detracciones." width="100%">
+									<tab:toolbar>
+										<Toolbar>
+											<core:Icon src="sap-icon://course-program" alt="Cart" size="1.25rem"/>
+											<Title text="Tabla de las materias de detracción ({myParam>/listMatDetraccion/length})" titleStyle="H3"/>
+											<ToolbarSpacer/>
+											<m:Input id="idTxtMatDetra" value="" type="Text" placeholder="Ingrese materia de detracción" liveChange=".handleLiveChange3('idTableMatDetraccion',$event)"
+												required="false" width="20%" editable="true" maxLength="16"/>
+											<Button text="Añadir materia de detracción" type="Emphasized" icon="sap-icon://sys-add" press="onPressCrearMatDetraccion"/>
+										</Toolbar>
+									</tab:toolbar>
+									<tab:noData>
+										<Link class="sapUiMediumMargin" text="No se hallaron las materias de detracciones."/>
+									</tab:noData>
+									<tab:columns>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Número de material"/>
+											<tab:template>
+												<Label text="{myParam>DE_NUM_MATERIAL}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="40%" hAlign="Center">
+											<Text text="Descripción"/>
+											<tab:template>
+												<Label text="{myParam>DE_DESCRIPCION}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Detracción"/>
+											<tab:template>
+												<Label text="{myParam>NUMTP}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Acción"/>
+											<tab:template>
+												<Toolbar height="auto">
+													<Button text="Editar" tooltip="Editar materia de detracción" icon="sap-icon://edit" type="Accept" width="50%" press="editarMatDetraccion"/>
+													<Button text="Eliminar" tooltip="Eliminar materia de detracción" icon="sap-icon://delete" type="Reject" width="50%" press="eliminarMatDetraccion"/>
+												</Toolbar>
+											</tab:template>
+										</tab:Column>
+									</tab:columns>
+								</tab:Table>
+							</m:IconTabFilter>
+							<m:IconTabFilter key="ServDetraccion" text="Servicios Det." count="{myParam>/listServDetraccion/length}" icon="sap-icon://course-program">
+								<tab:Table id="idTableServDetraccion" sort="sortDeliveryDate" rows="{ path: 'myParam>/listServDetraccion'}" visibleRowCount="12"
+									showNoData="No se hallaron los servicios de detracciones." width="100%">
+									<tab:toolbar>
+										<Toolbar>
+											<core:Icon src="sap-icon://ppt-attachment" alt="Cart" size="1.25rem"/>
+											<Title text="Tabla de los servicios de detracción ({myParam>/listServDetraccion/length})" titleStyle="H3"/>
+											<ToolbarSpacer/>
+											<m:Input id="idTxtServDetra" value="" type="Text" placeholder="Ingrese servicio de detracción" liveChange=".handleLiveChange5('idTableServDetraccion',$event)"
+												required="false" width="20%" editable="true" maxLength="16"/>
+											<Button text="Añadir servicio de detracción" type="Emphasized" icon="sap-icon://sys-add" press="onPressCrearServDetraccion"/>
+										</Toolbar>
+									</tab:toolbar>
+									<tab:noData>
+										<Link class="sapUiMediumMargin" text="No se hallaron los servicios de detracciones."/>
+									</tab:noData>
+									<tab:columns>
+										<tab:Column width="20%" hAlign="Center" sortProperty="DE_NUM_SERVICIO" filterProperty="DE_NUM_SERVICIO">
+											<Text text="Número de servicio"/>
+											<tab:template>
+												<Label text="{myParam>DE_NUM_SERVICIO}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="40%" hAlign="Center" sortProperty="DE_DESCRIPCION" filterProperty="DE_DESCRIPCION">
+											<Text text="Descripción"/>
+											<tab:template>
+												<Label text="{myParam>DE_DESCRIPCION}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="20%" hAlign="Center" sortProperty="NUMTP" filterProperty="NUMTP">
+											<Text text="Detracción"/>
+											<tab:template>
+												<Label text="{myParam>NUMTP}"/>
+											</tab:template>
+										</tab:Column>
+										<!-- Begin I@DP-21/12/2021-Ticket-2021-999 -->
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Estado"/>
+											<tab:template>
+												<tnt:InfoLabel id="il9" text="{ path: 'myParam>FLAG2', formatter: '.formatoEstadoSunatText' }"
+													colorScheme="{ path: 'myParam>FLAG2', formatter: '.formatoEstadoSunatType' }" displayOnly="true"/>
+											</tab:template>
+										</tab:Column>
+										<!-- End D@DP-21/12/2021-Ticket-2021-999 -->
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Acción"/>
+											<tab:template>
+												<Toolbar height="auto">
+													<Button text="Editar" tooltip="Editar servicio de detracción" icon="sap-icon://edit" type="Accept" width="50%" press="editarServDetraccion"/>
+													<Button text="Eliminar" tooltip="Eliminar servicio de detracción" icon="sap-icon://delete" type="Reject" width="50%" press="eliminarServDetraccion"/>
+												</Toolbar>
+											</tab:template>
+										</tab:Column>
+									</tab:columns>
+								</tab:Table>
+							</m:IconTabFilter>
+							<!-- Begin I@DP-21/12/2021-Ticket-2021-999 -->
+							<!--<m:IconTabFilter key="ServValReferencial" text="Val. Refer." count="{myParam>/listServValReferencial/length}" icon="sap-icon://course-program">
+								<tab:Table id="idServValReferencial" sort="sortDeliveryDate" rows="{ path: 'myParam>/listServValReferencial'}" visibleRowCount="12"
+									showNoData="No se hallaron las materias de valor referencial." width="100%">
+									<tab:toolbar>
+										<Toolbar>
+											<core:Icon src="sap-icon://course-program" alt="Cart" size="1.25rem"/>
+											<Title text="Tabla de servicios de valor referencial ({myParam>/listServValReferencial/length})" titleStyle="H3"/>
+											<ToolbarSpacer/>
+											<m:Input id="idTxtServValReferencial" value="" type="Text" placeholder="Ingrese material" liveChange=".handleLiveChange4('idServValReferencial',$event)"
+												required="false" width="20%" editable="true" maxLength="16"/>
+											<Button text="Añadir material" type="Emphasized" icon="sap-icon://sys-add" press="onPressCrearServValReferencial"/>
+										</Toolbar>
+									</tab:toolbar>
+									<tab:noData>
+										<Link class="sapUiMediumMargin" text="No se hallaron las materias de detracciones."/>
+									</tab:noData>
+									<tab:columns>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Número de servicio"/>
+											<tab:template>
+												<Label text="{myParam>DE_NUM_SERVICIO}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="40%" hAlign="Center">
+											<Text text="Descripción"/>
+											<tab:template>
+												<Label text="{myParam>DE_DESCRIPCION}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="20%" hAlign="Center">
+											<Text text="Acción"/>
+											<tab:template>
+												<Toolbar height="auto">
+													<Button text="Editar" tooltip="Editar material" icon="sap-icon://edit" type="Accept" width="50%" press="editarServValReferencial"/>
+													<Button text="Eliminar" tooltip="Eliminar material" icon="sap-icon://delete" type="Reject" width="50%" press="eliminarServValReferencial"/>
+												</Toolbar>
+											</tab:template>
+										</tab:Column>
+									</tab:columns>
+								</tab:Table>
+							</m:IconTabFilter>-->
+							<!-- End D@DP-21/12/2021-Ticket-2021-999 -->
+						</m:items>
+					</m:IconTabBar>
+				</m:content>
+			</m:Page>
+		</m:pages>
+	</m:App>
+</mvc:View>

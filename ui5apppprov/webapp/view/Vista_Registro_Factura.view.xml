@@ -1,0 +1,280 @@
+<mvc:View controllerName="nspprov.ui5apppprov.controller.Vista_Registro_Factura" xmlns:m="sap.m" xmlns:tnt="sap.tnt"
+	xmlns:layout="sap.ui.layout" xmlns:semantic="sap.f.semantic" xmlns:file="sap.ui.unified" xmlns:tab="sap.ui.table" xmlns:ux="sap.uxap"
+	xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+	<App>
+		<pages>
+			<Page title="Title">
+				<m:customHeader>
+					<m:Bar>
+						<m:contentLeft>
+							<m:Button id="idNav" icon="sap-icon://nav-back" press="btnInicio"/>
+							<m:Label text="Ruc Proveedor: {myParam>/usuarioLogin}"/>
+						</m:contentLeft>
+						<m:contentMiddle>
+							<m:Title level="H3" text="Registro de Factura (Carga XML)"/>
+						</m:contentMiddle>
+						<m:contentRight>
+							<m:Button id="idErrores" icon="sap-icon://message-popup" text="{myParam>/listErrores/length}" type="Emphasized" press="btnErrores"/>
+							<!--<m:Button id="idFacturar" icon="sap-icon://sales-order-item" text="Registrar" type="Emphasized" press="btnFacturar"/>-->
+							<m:Button id="idFacturar" icon="sap-icon://sales-order-item" text="Pre-registrar" type="Emphasized" press="btnFacturarMesage"/>
+						</m:contentRight>
+					</m:Bar>
+				</m:customHeader>
+				<m:content>
+					<m:SplitApp id="SplitAppDemo1" initialDetail="detail" orientationChange="onOrientationChange">
+						<m:masterPages>
+							<Page title="Master"/>
+						</m:masterPages>
+						<m:detailPages>
+							<m:Page id="detail" showHeader="false">
+								<m:content>
+									<Toolbar width="100%" height="auto">
+										<m:VBox width="30%">
+											<layout:VerticalLayout width="100%">
+												<layout:HorizontalLayout></layout:HorizontalLayout>
+												<m:Label text="Cargar XML: " design="Bold" labelFor="idXML" width="100%"/>
+												<Toolbar width="100%" id="idToolbar01">
+													<file:FileUploader id="idXML" name="myFileUpload" uploadUrl="upload/" tooltip="Subir Documento XML" width="100%" placeholder="Archivo XML"
+														change="change" fileType="XML" buttonText="Buscar" style="Emphasized" icon="sap-icon://laptop"/>
+													<!--	<m:Button text="Credenciales" id="idCredenciales" icon="sap-icon://account" width="20%" press="validarSunat" type="Emphasized"/>-->
+												</Toolbar>
+												<m:Button text="Cargar XML en Tabla" id="idAnadirCargarXMLTabla" icon="sap-icon://excel-attachment" width="100%"
+													press="btnAnadirCargarXMLTabla" type="Emphasized"/>
+											</layout:VerticalLayout>
+										</m:VBox>
+										<m:VBox width="70%">
+											<layout:HorizontalLayout></layout:HorizontalLayout>
+											<!-- backgroundDesign="Solid"-->
+											<m:Toolbar height="auto" width="100%">
+												<m:VBox width="50%">
+													<m:Label text="Mensajes de Validación Externa" design="Bold" width="100%"/>
+													<m:MessageStrip id="idValidacionFacySunat1" text="Estado del comprobante a la fecha de la consulta : SIN ASIGNAR" type="Information"
+														showIcon="true"></m:MessageStrip>
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+													<m:MessageStrip id="idValidacionFacySunat2" text="Estado del contribuyente a la fecha de emisión : SIN ASIGNAR" type="Information"
+														showIcon="true"></m:MessageStrip>
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+													<m:MessageStrip id="idValidacionFacySunat3" text="Validar Factura con la SUNAT" type="Information" showIcon="true"></m:MessageStrip>
+												</m:VBox>
+												<m:VBox width="50%">
+													<m:Label text="Mensajes de Validación Interna" design="Bold" width="100%"/>
+													<m:MessageStrip id="idValidacionFacAsig" text="Condición de domicilio a la fecha de emisión : SIN ASIGNAR" type="Information"
+														showIcon="true"></m:MessageStrip>
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+													<m:MessageStrip id="idValidacionDoc" text="" type="Information" showIcon="true"></m:MessageStrip>
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+													<m:MessageStrip id="idValidacionDeta" text="Sin detracción a validar" type="Information"
+														showIcon="true"></m:MessageStrip><!-- MAURO 20211014 -->
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+												</m:VBox>
+											</m:Toolbar>
+											<m:layoutData>
+												<layout:GridData span="L3 M3 S3"/>
+											</m:layoutData>
+										</m:VBox>
+									</Toolbar>
+									<layout:Grid defaultSpan="L12 M12 S12">
+										<layout:content>
+											<m:VBox>
+												<m:VBox>
+													<m:ScrollContainer height="480px" width="100%" horizontal="true" vertical="true" focusable="true">
+														<m:QuickViewCard id="quickViewCard" pages="{path : 'myParam>/pages', templateShareable : 'true'}" navigate="onNavigate"
+															afterNavigate="onAfterNavigate">
+															<m:QuickViewPage pageId="{myParam>pageId}" header="{myParam>header}" icon="{myParam>icon}" title="{myParam>title}"
+																titleUrl="{myParam>titleUrl}" groups="{path : 'myParam>groups', templateShareable : 'true'}" description="{myParam>description}">
+																<m:QuickViewGroup elements="{path : 'myParam>/listItemCabeceraFactura', templateShareable : 'true'}">
+																	<m:QuickViewGroupElement label="{myParam>label}" value="{myParam>value}" url="{myParam>url}" type="{myParam>elementType}"
+																		pageLinkId="{myParam>pageLinkId}" emailSubject="{myParam>emailSubject}" target="{myParam>target}"></m:QuickViewGroupElement>
+																</m:QuickViewGroup>
+															</m:QuickViewPage>
+														</m:QuickViewCard>
+													</m:ScrollContainer>
+												</m:VBox>
+												<m:layoutData>
+													<layout:GridData span="L3 M3 S3"/>
+												</m:layoutData>
+											</m:VBox>
+											<m:VBox>
+												<m:VBox>
+													<tab:Table id="idTableItemDetalleFac" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemDetalleFactura'}" visibleRowCount="8"
+														showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar height="auto" class="sapUiSmallMargin">
+																<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																<m:Title text="Detalle de la Factura" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Button text="Asignar" id="idAsignar" icon="sap-icon://search" press="btnBuscarItem2" type="Emphasized"/>
+																<m:Label text="Tipo de carga : " design="Bold" textAlign="Right"/>
+																<m:ComboBox id="idComboTipo" items="{ path: 'myParam>/tipoValeIngreso'}" width="200px" selectionChange="changeCargaTipo"
+																	placeholder="Seleccione tipo de vale de ingreso ..." required="true" valueStateText="Se requiere seleccionar un vale de ingreso.">
+																	<core:Item key="{myParam>opcion}" text="{myParam>opcion} | {myParam>descripcion}"/>
+																</m:ComboBox>
+																<m:Title text="N° Registros ( {myParam>/listItemDetalleFactura/length} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column id="idColumDetalleFac1" width="5rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac1" text="Posición"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaPosicion}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center" visible="false">
+																<m:Text text="Buscar Item"/>
+																<tab:template>
+																	<m:Button text="Buscar" id="idBscarItem" icon="sap-icon://search" width="100%" press="btnBuscarItem" type="Emphasized"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center" visible="false">
+																<m:Text text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{myParam>clistItemDetalleFacturaEstado}"
+																		state="{ path: 'myParam>clistItemDetalleFacturaEstado', formatter: '.formatStatusItemFac' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center" visible="false">
+																<m:Text text="Total Doc. Material"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaTotal}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac11" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac11" text="Valor Neto"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaValortotalNetoXItem}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Precio Sin IGV"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaValorVenxItem}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac2" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac2" text="Código"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaCodigo}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac3" width="20rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac3" text="Descripcion"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaDescripcion}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac4" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac4" text="Unidad de Medida"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaUniMedida}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac5" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac5" text="Cantidad"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaCantidad}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac6" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac6" text="Afectación al IGV por Item"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaAfectacionIGV}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac7" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac7" text="Precio Unitario por Item"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaPreUnixItem}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac8" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac8" text="Precio Venta por Item"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaPreVenxItem}"/>
+																</tab:template>
+															</tab:Column>
+															<!--<tab:Column id="idColumDetalleFac9" width="8rem" hAlign="Center">
+																				<m:Text id="idTextColumDetalleFac9" text="Total IGV por Item"/>
+																				<tab:template>
+																					<m:Label text="{myParam>clistItemDetalleFacturaTotIGVxItem}"/>
+																				</tab:template>
+																			</tab:Column>
+																			<tab:Column id="idColumDetalleFac10" width="8rem" hAlign="Center">
+																				<m:Text id="idTextColumDetalleFac10" text="Valor de venta por item"/>
+																				<tab:template>
+																					<m:Label text="{myParam>clistItemDetalleFacturaValorVenxItem}"/>
+																				</tab:template>
+																			</tab:Column>-->
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+												<m:layoutData>
+													<layout:GridData span="L9 M9 S9"/>
+												</m:layoutData>
+												<m:Toolbar height="auto" width="100%" class="sapUiTinyMargin">
+													<m:ToolbarSpacer></m:ToolbarSpacer>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Documentos Sustentos" design="Bold"/>
+														<!--<m:ComboBox id="idTipoOperacion" items="{ path: 'myParam>/tipoOperacion'}" width="100%" placeholder="Seleccione tipo de operación ...">-->
+														<!--	<core:Item key="{myParam>operacion}" text="{myParam>operacion}"/>-->
+														<!--</m:ComboBox>-->
+														<m:Button text="Cargar" id="idAnadirDocSus" icon="sap-icon://documents" width="100%" press="btnAnadirDocSus" type="Emphasized"/>
+														<!--<m:Label text="" design="Bold" />-->
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Código detracción: " design="Bold"/>
+														<m:ComboBox id="idCodigoDetra" items="{ path: 'myParam>/codigoDetr'}" width="100%" placeholder="Seleccione código detracción ..." enabled="false">
+															<core:Item key="{myParam>codigo}" text="{myParam>codigo} - {myParam>descripcion}"/> <!-- MAURO 20211014 -->
+														</m:ComboBox>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Total descuentos: " design="Bold" labelFor="idTotalDescuentos"/>
+														<m:Input id="idTotalDescuentos" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Total IGV: " design="Bold" labelFor="idTotalIGV"/>
+														<m:Input id="idTotalIGV" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Valor total: " design="Bold" labelFor="idImporteTotal"/>
+														<m:Input id="idImporteTotal" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Valor total sin IGV: " design="Bold" labelFor="idImporteTotalIGV"/>
+														<m:Input id="idImporteTotalIGV" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+												</m:Toolbar>
+												<!-- Begin I@DP-21/12/2021-Ticket-2021-999 -->
+												<m:Toolbar height="auto" width="100%" class="sapUiTinyMargin">
+													<m:ToolbarSpacer></m:ToolbarSpacer>
+													<layout:VerticalLayout width="20%">
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Button text="Actualizar" class="sapUiSmallMarginTop" id="idUdpLabelValorReferencial" icon="sap-icon://edit" press="btnUdpLabelValorReferencial" type="Emphasized" width="100%"/>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label id="idLabelValorReferencial" text="Valor referencial: " design="Bold" labelFor="idValorReferencial"/>
+														<m:Input id="idValorReferencial" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+												</m:Toolbar>
+												<!-- End D@DP-21/12/2021-Ticket-2021-999 -->
+											</m:VBox>
+										</layout:content>
+									</layout:Grid>
+								</m:content>
+							</m:Page>
+						</m:detailPages>
+					</m:SplitApp>
+				</m:content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

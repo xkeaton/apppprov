@@ -1,0 +1,196 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:m="sap.m" xmlns:layout="sap.ui.layout"
+	controllerName="nspprov.ui5apppprov.controller.Vista_Menu_Principal" xmlns:html="http://www.w3.org/1999/xhtml">
+	<m:App id="app">
+		<m:pages>
+			<m:Page title="Title">
+				<m:customHeader>
+					<m:Bar>
+						<m:contentLeft>
+							<m:Title titleStyle="H6" text="RUC de la empresa :"/>
+							<m:ComboBox id="idRUC" items="{ path: 'myParam>/listaEmpresasRUC'}" placeholder="- Seleccione RUC de la empresa-" required="true"
+								width="250px" change="changeRucEvt" visible="true">
+								<core:Item key="{myParam>codigo}" text="{myParam>codigo} - {myParam>descripcion}"/>
+							</m:ComboBox>
+						</m:contentLeft>
+						<m:contentMiddle>
+							<!--<m:Title text="Portal de Proveedores - Menú" titleStyle="H5"/>-->
+							<m:Image src="./img/IconoLogoSmartProvider1.png" width="35px" height="35px"/>
+							<m:Image src="./img/LogoSmartProvider2.png" width="179.09px" height="25px"/>
+						</m:contentMiddle>
+						<m:contentLeft></m:contentLeft>
+						<m:contentRight>
+							<m:Toolbar height="auto">
+								<m:Title titleStyle="H6" text="RUC del Proveedor :"/>
+								<m:ComboBox id="idRUCProveedor" items="{ path: 'myParam>/listaProveedoresRUC'}" placeholder="- Seleccione RUC del proveedor-"
+									required="true" width="250px" change="changeRucEvtProv" visible="false">
+									<core:Item key="{myParam>codigo}" text="{myParam>codigo} - {myParam>descripcion}"/>
+								</m:ComboBox>
+								<m:Input id="productInput" type="Text" placeholder="- Seleccione RUC del proveedor-" width="250px" valueHelpRequest="handleValueHelp"
+									showValueHelp="true" valueHelpOnly="true"></m:Input>
+								<core:Icon id="idRUCProveedorNoAdmin1" src="sap-icon://customer" class="size2" color="#ffffff"></core:Icon>
+								<m:Title id="idRUCProveedorNoAdmin2" text="{myParam>/usuarioLogin}" titleStyle="H5"/>
+								<m:Button icon="sap-icon://log" press="LogOffPress" type="Emphasized"/>
+							</m:Toolbar>
+						</m:contentRight>
+					</m:Bar>
+				</m:customHeader>
+				<m:content>
+					<layout:Grid id="ObjectPageLayout" defaultSpan="L12 M12 S12">
+						<layout:content>
+							<m:VBox>
+								<layout:HorizontalLayout></layout:HorizontalLayout>
+								<layout:HorizontalLayout></layout:HorizontalLayout>
+								<!--<m:HBox justifyContent="Center">
+									<m:Title text="Bienvenido" titleStyle="H2"/>
+								</m:HBox>-->
+								<layout:Grid id="ObjectPageLayout2" defaultSpan="L12 M12 S12" class="sapUiMediumMargin">
+									<layout:content>
+										<m:VBox>
+											<m:VBox>
+												<m:HBox justifyContent="Center">
+													<m:Title text="Bienvenido: {myParam>/usuarioLoginDescripcionRuc}" titleStyle="H2"/>
+												</m:HBox>
+												<m:HBox justifyContent="Center">
+													<!--<m:Panel id="carouselContainer" height="370px" width="820px">
+										<m:Carousel class="sapUiContentPadding" loop="true" id="carouselSample" pageChanged="funcionChangue" showPageIndicator="true" arrowsPlacement="Content">
+											<m:Image src="./img/foto01.jpg" alt="Example picture of speakers" />
+											<m:Image src="./img/foto02.jpg" alt="Example picture of speakers"/>
+											<m:Image src="./img/foto03.jpg" alt="Example picture of speakers"/>
+											<m:Image src="./img/foto04.jpg" alt="Example picture of speakers"/>
+										</m:Carousel>
+									</m:Panel>-->
+													<m:SlideTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout">
+														<m:tiles>
+															<m:GenericTile backgroundImage="./img/logo1.jpg" frameType="TwoByOne" press="press">
+																<m:TileContent id="idFecha1" footer="">
+																	<m:NewsContent contentText="Es una nueva Aplicación de Información de facturación para Proveedores, Acreedores y Clientes."
+																		subheader="Usuario: {userapi>/name}"/>
+																</m:TileContent>
+															</m:GenericTile>
+															<m:GenericTile backgroundImage="./img/logo2.jpg" frameType="TwoByOne" press="press">
+																<m:TileContent id="idFecha2" footer="">
+																	<m:NewsContent contentText="Aquellos que estén autorizados, accederán a la información básica del estado de su facturación y siempre."
+																		subheader=""/>
+																</m:TileContent>
+															</m:GenericTile>
+														</m:tiles>
+													</m:SlideTile>
+												</m:HBox>
+											</m:VBox>
+											<m:layoutData>
+												<layout:GridData span="L12 M12 S12"/>
+											</m:layoutData>
+										</m:VBox>
+										<!--<m:VBox>
+											<m:layoutData>
+												<layout:GridData span="L6 M6 S6"/>
+											</m:layoutData>
+										</m:VBox>-->
+									</layout:content>
+								</layout:Grid>
+							</m:VBox>
+							<m:VBox>
+								<layout:HorizontalLayout></layout:HorizontalLayout>
+								<m:HBox justifyContent="Center">
+									<m:ScrollContainer height='50%' horizontal='true' vertical='false'>
+										<m:VBox width="100%" justifyContent="Center" alignItems="Center" height="100%">
+											<layout:HorizontalLayout id="TileContainerExpanded" allowWrapping="true">
+												<m:GenericTile id="idItem1" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Registro suministros y servicios"
+													subheader="Carga XML" press="btnItemFacNew">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://expense-report"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem2" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Registro por misceláneos"
+													subheader="Carga XML" press="btnItemSinNew">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://batch-payments"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem3" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Registro de Consignaciones"
+													subheader="Carga XML" press="btnItemConsignacion">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://sales-quote"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem4" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Registro Nota Cred. sin pedido"
+													subheader="Carga XML" press="btnItemDevSinPedido">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://customer-order-entry"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem5" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Registro de Contratista"
+													subheader="Carga XML" press="btnItemContratista">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://sales-order"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<!--</layout:HorizontalLayout>
+											<layout:HorizontalLayout id="TileContainerExpanded2" allowWrapping="true">-->
+												<m:GenericTile id="idItem6" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Registro de nota de crédito"
+													subheader="Carga XML" press="btnItemPedConDevo">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://order-status"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem10" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Resumen de facturas registradas"
+													press="btnItem10">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://customer-financial-fact-sheet"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem7" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Reporte de factura" press="btnItem2">
+													<m:TileContent>
+														<!--<m:ImageContent src="sap-icon://customer-financial-fact-sheet"/>-->
+														<m:NumericContent id="idItem7Registro" scale="R" value="0" valueColor="Neutral" indicator="Down"
+															icon="sap-icon://customer-financial-fact-sheet"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem8" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Reporte de Consignaciones"
+													press="btnItemReporConsignacion">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://customer-financial-fact-sheet"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem11" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Reporte de suministros/HES"
+													press="btnItemVale">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://clinical-tast-tracker"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<m:GenericTile id="idItem9" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Administrador de usuarios"
+													press="btnItemAdmiUsuarios">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://account"/>
+													</m:TileContent>
+												</m:GenericTile>
+												<!--<m:GenericTile id="idItem10" class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Resumen de facturas registradas"
+													press="btnItemResFacRegis">
+													<m:TileContent>
+														<m:ImageContent src="sap-icon://customer-financial-fact-sheet"/>
+													</m:TileContent>
+												</m:GenericTile>-->
+												<!--		<m:GenericTile class="sapUiTinyMarginBegin sapUiTinyMarginTop tileLayout" header="Reporte de Ordenes de Compra" press="btnItem1">-->
+												<!--	<m:TileContent>-->
+												<!--		<m:ImageContent src="sap-icon://accelerated"/>-->
+												<!--	</m:TileContent>-->
+												<!--</m:GenericTile>-->
+											</layout:HorizontalLayout>
+										</m:VBox>
+									</m:ScrollContainer>
+								</m:HBox>
+							</m:VBox>
+						</layout:content>
+					</layout:Grid>
+				</m:content>
+				<m:footer>
+					<m:Toolbar>
+						<m:ToolbarSpacer/>
+						<m:Label id="idTextoFooter" text="Powered by "/>
+						<m:Image src="./css/Logotipo.png" alt="Example picture of speakers" width="76.8px" height="30.9px"/>
+					</m:Toolbar>
+				</m:footer>
+			</m:Page>
+		</m:pages>
+	</m:App>
+</mvc:View>

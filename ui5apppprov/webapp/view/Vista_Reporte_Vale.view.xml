@@ -1,0 +1,328 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:m="sap.m" xmlns:layout="sap.ui.layout"
+	xmlns:tab="sap.ui.table" xmlns:u="sap.ui.unified" controllerName="nspprov.ui5apppprov.controller.Vista_Reporte_Vale"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<m:App id="app">
+		<m:pages>
+			<m:SplitApp id="SplitAppDemo" initialDetail="detailF" initialMaster="master1" afterMasterOpen="showEvent" afterMasterNavigate="showEvent"
+				orientationChange="onOrientationChange" mode="ShowHideMode">
+				<m:masterPages>
+					<m:Page id="master1" title="Cuadro de busqueda" class="sapUiStdPage" showFooter="true">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Vales" titleStyle="H5" id="idTituloOrden"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button id="idNavMenu" width="100%" icon="sap-icon://nav-back" press="btnRegresarMenu"/>
+								</m:contentLeft>
+								<m:contentRight>
+									<m:Button id="idFilter" icon="sap-icon://filter" press="btnSeleccionarFiltros"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:SearchField liveChange="onSearchFac" width="100%" placeholder="Buscar doc. ingreso / hoja de servicio"/>
+							<m:List id="idListMaster1" items="{ path : 'myParam>/listReporteVale'}" includeItemInSelection="true" mode="SingleSelectMaster"
+								noDataText="No se halló ningún doc.ingreso/hoja de servicio" select="clicItemFactura">
+								<m:items>
+									<m:ObjectListItem id="idListaTitulos"
+										title="{parts: [{path: 'myParam>DOC_MATERIAL'},{path: 'myParam>HOJA_ENTRADA'},{path: 'myParam>GUIA_REMISION'},{path: 'myParam>CENTROS'},{path: 'myParam>TIPO'}],formatter: '.formatoValeHoja'}"
+										icon="{parts: [{path: 'myParam>FLAC'}],formatter: '.formatTipoCargaAsignacion'}" type="Active" press="clicItemFactura">
+										<m:attributes>
+											<m:ObjectAttribute title="Tipo" text="{ path: 'myParam>TIPO', formatter: '.formatoValeHoja4' }"/>
+											<m:ObjectAttribute id="idGuiaCentroTail" title="{ path: 'myParam>TIPO', formatter: '.formatTipoCarga1' }"
+												text="{parts: [{path: 'myParam>GUIA_REMISION'},{path: 'myParam>CENTROS'},{path: 'myParam>TIPO'}],formatter: '.formatTipoCarga'}"/>
+											<m:ObjectAttribute title="Fecha" text="{myParam>FEC_RECEPCIONNEW}"/>
+										</m:attributes>
+										<m:markers>
+											<!--<m:ObjectMarker id="idFlagged1" type="{parts: [{path: 'myParam>FLAC'}],formatter: '.formatTipoCargaAsignacion'}"/>-->
+										</m:markers>
+									</m:ObjectListItem>
+								</m:items>
+							</m:List>
+						</m:content>
+					</m:Page>
+					<m:Page id="master2" title="Cuadro de busqueda" class="sapUiStdPage" showFooter="true">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Filtros" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button width="100%" icon="sap-icon://nav-back" press="btnRegresarMaster1"/>
+								</m:contentLeft>
+								<m:contentRight>
+									<m:Button width="100%" icon="sap-icon://add-filter" press="btnSeleccionarFiltros"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<layout:VerticalLayout width="100%" class="sapUiSmallMargin">
+								<m:Toolbar id="idToolbarMensaje" width="90%" style="Clear">
+									<m:Label text="Habilite los filtros a realizar con el botón de la parte superior." width="90%" wrapping="true"/>
+									<core:Icon src="sap-icon://shortcut" class="size1" color="#0854a0" width="10%"></core:Icon>
+								</m:Toolbar>
+								<layout:VerticalLayout width="90%" id="idPanelPorFecha">
+									<m:SegmentedButton id="idSegmentedSelect" width="100%" class="sapUiSmallMarginBottom sapUiSizeCompact">
+										<m:items>
+											<m:SegmentedButtonItem text="Por Fecha" press="handleNav" icon="sap-icon://check-availability">
+												<m:customData>
+													<core:CustomData key="target" value="pag1"/>
+												</m:customData>
+											</m:SegmentedButtonItem>
+											<m:SegmentedButtonItem text="Entre Fechas" press="handleNav" icon="sap-icon://check-availability">
+												<m:customData>
+													<core:CustomData key="target" value="pag2"/>
+												</m:customData>
+											</m:SegmentedButtonItem>
+										</m:items>
+									</m:SegmentedButton>
+									<m:NavContainer id="navCon" width="100%" height="4.2em" class="navContainerControl sapUiSmallMarginBottom">
+										<m:Page id="pag1" showHeader="false" title="Filtro por Fecha">
+											<m:Label text="Fecha: " design="Bold" labelFor="idFec"/>
+											<m:OverflowToolbar height="auto">
+												<m:DatePicker id="idFec" value="2018-09-26" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom" width="100%"
+													placeholder="DD/MM/AAAA" required="true"/>
+											</m:OverflowToolbar>
+										</m:Page>
+										<m:Page id="pag2" showHeader="false" title="Filtro entre Fechas">
+											<m:Label text="Fecha Inicio: " design="Bold" labelFor="idFecIni"/>
+											<m:DatePicker id="idFecIni" value="2011-09-17" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom"
+												width="100%" placeholder="DD/MM/AAAA" required="true"/>
+											<m:Label text="Fecha Final: " design="Bold" labelFor="idFecFin"/>
+											<m:OverflowToolbar height="auto">
+												<m:DatePicker id="idFecFin" value="2019-09-20" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy" class="sapUiSmallMarginBottom"
+													width="100%" placeholder="DD/MM/AAAA" required="true"/>
+											</m:OverflowToolbar>
+										</m:Page>
+									</m:NavContainer>
+								</layout:VerticalLayout>
+								<layout:VerticalLayout width="90%" id="idPanelPorSituacion">
+									<m:Label text="Filtro Situación: " design="Bold" labelFor="idSituacion"/>
+									<m:OverflowToolbar height="auto">
+										<m:ComboBox id="idSituacion" items="{ path: 'myParam>/listSituacion'}" class="sapUiSmallMarginBottom" placeholder="- Seleccione -"
+											required="false" width="100%">
+											<core:Item key="{myParam>clistSituacionNom}" text="{myParam>clistSituacionNom}"/>
+										</m:ComboBox>
+									</m:OverflowToolbar>
+								</layout:VerticalLayout>
+								<layout:VerticalLayout width="90%" id="idPanelPorEstado" class="sapUiSmallMarginTop">
+									<m:Label text="Filtro Estado: " design="Bold" labelFor="idEstado"/>
+									<m:OverflowToolbar height="auto">
+										<m:ComboBox id="idEstado" items="{ path: 'myParam>/listEstado'}" class="sapUiSmallMarginBottom" placeholder="- Seleccione -"
+											required="false" width="100%">
+											<core:Item key="{myParam>clistEstadoNom}" text="{myParam>clistEstadoNom}"/>
+										</m:ComboBox>
+									</m:OverflowToolbar>
+								</layout:VerticalLayout>
+							</layout:VerticalLayout>
+						</m:content>
+					</m:Page>
+				</m:masterPages>
+				<m:detailPages>
+					<m:Page id="detailF" class="panel_1 clTitle" title="Factura previa">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentLeft>
+									<m:Button id="idResponsableOrd" type="Emphasized" text="Solicitar información de Orden de compra" icon="sap-icon://key-user-settings"
+										press="btnResponsableOrd"/>
+								</m:contentLeft>
+								<m:contentMiddle>
+									<m:Title id="idTituloSumBin" level="H3" text="Reporte de Bienes"/>
+								</m:contentMiddle>
+								<m:contentRight>
+									<m:Button tooltip="Descargar PDF" id="idDescargarPDF" icon="sap-icon://pdf-attachment" press="btnDescargarPDF"/>
+									<m:Button id="idLogOff" icon="sap-icon://log" press="LogOffPress"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:ObjectHeader id="ohFac" binding="{path : 'myParam>/listConsultaResumenFacturaCabecera'}" responsive="true" fullScreenOptimized="false"
+								icon="sap-icon://sales-order-item"
+								title="{parts: [{path: 'myParam>DOC_MATERIAL'},{path: 'myParam>HOJA_ENTRADA'},{path: 'myParam>GUIA_REMISION'},{path: 'myParam>CENTROS'},{path: 'myParam>TIPO'}],formatter: '.formatoValeHoja'}"
+								backgroundDesign="Translucent" intro="" number="" numberUnit="">
+								<m:attributes>
+									<m:ObjectAttribute id="idlistConsultaResumenFacturaCabeceraPosiciones" title="Posiciones" text=""/>
+									<m:ObjectAttribute id="idlistConsultaResumenFacturaCabeceraCantidad" title="Cantidad" text="0"/>
+									<m:ObjectAttribute id="idTitleFecha" title="Fecha registro" text="{myParam>FEC_RECEPCIONNEW}"/>
+									<m:ObjectAttribute id="idTitleGuiaCentro" title="" text=""/>
+									<m:ObjectAttribute title="Ord. compra" text="{myParam>NUMERO_ORDEN} / {myParam>POSICION_ORDEN}"/>
+								</m:attributes>
+								<m:statuses>
+									<m:ObjectStatus title="RUC empresa" text="{myParam>EM_RUC}" state="Information"/>
+									<m:ObjectStatus title="RUC proveedor" text="{myParam>US_RUC}" state="Information"/>
+									<m:ObjectStatus id="idlistConsultaResumenFacturaCabeceraEstado" title="Estado" text="" state="Information"/>
+								</m:statuses>
+							</m:ObjectHeader>
+							<m:IconTabBar id="idTabBarFac" expanded="true" class="sapUiResponsiveContentPadding">
+								<m:items>
+									<m:IconTabFilter id="idIconBarItem" key="Item" text="Posiciones por doc. ingreso/hoja de servicio"
+										count="{myParam>/listConsultaResumenFacturaDetalle/length}">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<tab:Table id="idTableItemFacturasV" sort="sortDeliveryDate" rows="{ path: 'myParam>/listConsultaResumenFacturaDetalle'}"
+														visibleRowCount="8" showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://paid-leave" alt="Cart" size="1.25rem"/>
+																<m:Title text="Posición por doc. ingreso" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Button tooltip="Orden de Compra" text="Orden de Compra" type="Emphasized" id="idDescargarPDFValeHes" icon="sap-icon://pdf-attachment"
+																	press="btnDescargarPedido"/>
+																<m:Title text="N° Registros ( {myParam>/listConsultaResumenFacturaDetalle/length} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column width="4rem" hAlign="Center">
+																<m:Text text="Nro"/>
+																<tab:template>
+																	<m:Label text="{myParam>DE_POS_DOC_MATERIAL}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="14rem" hAlign="Center">
+																<m:Text text="Cód. Material"/>
+																<tab:template>
+																	<m:Label
+																		text="{parts: [{path: 'myParam>DE_NUM_MATERIAL'},{path: 'myParam>DE_NUM_SERVICIO'},{path: 'myParam>DE_TIPO'}],formatter: '.formatoValeHoja2'}"
+																		design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="19rem" hAlign="Center">
+																<m:Text text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>DE_DESCRIPCION}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="20rem" hAlign="Center">
+																<m:Text text="Lote"/>
+																<tab:template>
+																	<m:Text text="{myParam>LOTE}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="6rem" hAlign="Center">
+																<m:Text text="Almacén"/>
+																<tab:template>
+																	<m:Text text="{myParam>ALMACEN}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="6rem" hAlign="Center" visible="false">
+																<m:Text text="Ubicación"/>
+																<tab:template>
+																	<m:Text text="{myParam>UBICACION}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Cantidad"/>
+																<tab:template>
+																	<Text text="{myParam>DE_CANTIDAD}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="7rem" hAlign="Center">
+																<m:Text text="Monto"/>
+																<tab:template>
+																	<m:Text text="{myParam>DE_TOTAL}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="6rem" hAlign="Center">
+																<m:Text text="Moneda"/>
+																<tab:template>
+																	<m:Text text="{myParam>DE_MONEDA}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="6rem" hAlign="Center">
+																<m:Text text="Nro Sol"/>
+																<tab:template>
+																	<m:Text text="{myParam>NROSOLICITU}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="6rem" hAlign="Center" visible="false">
+																<m:Text text="Nota de Recepción"/>
+																<tab:template>
+																	<m:Text text="{myParam>NOTA_RECEPCION}"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+													<tab:Table id="idTableItemFacturasH" sort="sortDeliveryDate" rows="{ path: 'myParam>/listConsultaResumenFacturaDetalle'}"
+														visibleRowCount="8" showNoData="No se hallaron Items.">
+														<tab:toolbar>
+															<m:Toolbar>
+																<core:Icon src="sap-icon://paid-leave" alt="Cart" size="1.25rem"/>
+																<m:Title text="Posición por Hoja de Servicios" titleStyle="H3"/>
+																<m:ToolbarSpacer/>
+																<m:Button tooltip="Orden de Compra" text="Orden de Compra" type="Emphasized" id="idDescargarPDFValeHes2" icon="sap-icon://pdf-attachment"
+																	press="btnDescargarPedido"/>
+																<m:Title text="N° Registros ( {myParam>/listConsultaResumenFacturaDetalle/length} )" titleStyle="H4"/>
+															</m:Toolbar>
+														</tab:toolbar>
+														<tab:noData>
+															<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+														</tab:noData>
+														<tab:columns>
+															<tab:Column width="4rem" hAlign="Center">
+																<m:Text text="Nro"/>
+																<tab:template>
+																	<m:Label text="{parts: [{path: 'myParam>DE_NUM_LINEA'}],formatter: '.formatoValeHoja3'}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="14rem" hAlign="Center" visible="false">
+																<m:Text text="Servicio"/>
+																<tab:template>
+																	<m:Label
+																		text="{parts: [{path: 'myParam>DE_NUM_MATERIAL'},{path: 'myParam>DE_NUM_SERVICIO'},{path: 'myParam>DE_TIPO'}],formatter: '.formatoValeHoja2'}"
+																		design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="19rem" hAlign="Center">
+																<m:Text text="Descripción"/>
+																<tab:template>
+																	<m:Label text="{myParam>DE_DESCRIPCION}" design="Bold"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Cantidad"/>
+																<tab:template>
+																	<m:Text text="{myParam>DE_CANTIDAD}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="7rem" hAlign="Center">
+																<m:Text text="Monto"/>
+																<tab:template>
+																	<m:Text text="{myParam>DE_TOTAL}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="6rem" hAlign="Center">
+																<m:Text text="Moneda"/>
+																<tab:template>
+																	<m:Text text="{myParam>DE_MONEDA}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="6rem" hAlign="Center">
+																<m:Text text="Solicitud"/>
+																<tab:template>
+																	<m:Text text="{myParam>SOLICITUDS}"/>
+																</tab:template>
+															</tab:Column>
+														</tab:columns>
+													</tab:Table>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+									<m:IconTabFilter id="idIconBarDocumento" key="Documento" visible="false">
+										<m:content></m:content>
+									</m:IconTabFilter>
+								</m:items>
+							</m:IconTabBar>
+						</m:content>
+						<m:footer></m:footer>
+					</m:Page>
+				</m:detailPages>
+			</m:SplitApp>
+		</m:pages>
+	</m:App>
+</mvc:View>

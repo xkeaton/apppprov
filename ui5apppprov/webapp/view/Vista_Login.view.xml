@@ -1,0 +1,96 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:m="sap.m" xmlns:layout="sap.ui.layout"
+	controllerName="nspprov.ui5apppprov.controller.Vista_Login" xmlns:html="http://www.w3.org/1999/xhtml">
+	<m:App id="app">
+		<m:pages>
+			<m:Page class="page2BgImg" title="Title" showHeader="false">
+				<m:content>
+					<layout:Grid id="ObjectPageLayout" defaultSpan="L12 M12 S12" class="sapUiMediumMargin">
+						<layout:content>
+							<m:VBox>
+								<m:VBox>
+									<m:Image src="./imagenes/sap_50x26.png"/>
+								</m:VBox>
+								<m:layoutData>
+									<layout:GridData span="L2 M2 S2"/>
+								</m:layoutData>
+							</m:VBox>
+							<m:VBox id="idLoginVBox" class="sapUiMediumMargin">
+								<m:VBox >
+									<layout:HorizontalLayout></layout:HorizontalLayout>
+									<layout:HorizontalLayout></layout:HorizontalLayout>
+									<m:items>
+										<m:Label id="idTitulo" class="clTitle" text="Iniciar Sesión"/>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<m:Label class="clTitle" text="RUC del proveedor"/>
+										<m:Input id="idUsuario" value="" placeholder="Ingrese RUC del proveedor (11)" maxLength="11" liveChange="chnCambio"></m:Input>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<m:Label class="clTitle" text="Contraseña"/>
+										<m:HBox width="100%" justifyContent="SpaceBetween">
+											<m:Input id="idPassword" width="100%" value="" placeholder="Ingrese Contraseña" type="Password" maxLength="30" liveChange="chnCambio">
+												<m:layoutData>
+													<m:FlexItemData growFactor="1"/>
+												</m:layoutData>
+											</m:Input>
+											<m:Label>
+												<m:layoutData>
+													<m:FlexItemData growFactor="1"/>
+												</m:layoutData>
+											</m:Label>
+											<m:ToggleButton id="idVisualizarPass" width="100%" icon="sap-icon://show" pressed="false" press="btnVisualizarCon">
+												<m:layoutData>
+													<m:FlexItemData growFactor="1"/>
+												</m:layoutData>
+											</m:ToggleButton>
+										</m:HBox>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<m:MessageStrip id="idValidacionUsuario" text="El Usuario o Contraseña no es Correcto o el Usuario no esta activo" type="Error"
+											showIcon="true"></m:MessageStrip>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<m:HBox>
+											<m:Label id="idGenerarcaptcha" text=""/>
+											<m:Button press="onRefresh" icon="sap-icon://refresh"/>
+										</m:HBox>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<m:Input id="idTextoCaptcha" value="" placeholder="Ingrese Captcha" maxLength="4"></m:Input>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<m:Button width="100%" text="Ingresar" icon="sap-icon://accept" type="Emphasized" press="btnIngresar"></m:Button>
+										<layout:HorizontalLayout></layout:HorizontalLayout>
+										<m:Button width="100%" text="Generar / Recuperar Contraseña" icon="sap-icon://key" type="Emphasized" press="btnGenRecPassword"></m:Button>
+									
+									</m:items>
+								</m:VBox>
+								<m:layoutData>
+									<layout:GridData span="L3 M3 S3"/>
+								</m:layoutData>
+							</m:VBox>
+							<m:VBox>
+								<m:layoutData>
+									<layout:GridData span="L3 M3 S3"/>
+								</m:layoutData>
+							</m:VBox>
+							<m:VBox>
+								<m:layoutData>
+									<layout:GridData span="L2 M2 S2"/>
+								</m:layoutData>
+							</m:VBox>
+							<m:VBox>
+								<m:layoutData>
+									<layout:GridData span="L2 M2 S2"/>
+								</m:layoutData>
+							</m:VBox>
+						</layout:content>
+					</layout:Grid>
+				</m:content>
+				<m:footer>
+					<m:Toolbar>
+						<m:ToolbarSpacer/>
+						<m:Label id="idTextoFooter" text="Powered by "/>
+						<m:Image src="./css/Logotipo.png" alt="Example picture of speakers" width="76.8px" height="30.9px"/>
+					</m:Toolbar>
+				</m:footer>
+			</m:Page>
+		</m:pages>
+	</m:App>
+</mvc:View>

@@ -1,0 +1,411 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:m="sap.m" xmlns:layout="sap.ui.layout"
+	xmlns:semantic="sap.f.semantic" xmlns:file="sap.ui.unified" xmlns:tab="sap.ui.table"
+	controllerName="nspprov.ui5apppprov.controller.Vista_Control_Factura"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<m:App id="app">
+		<m:pages>
+			<m:SplitApp id="SplitAppDemo" initialDetail="detail" orientationChange="onOrientationChange">
+				<m:masterPages>
+					<Page title="Master"/>
+				</m:masterPages>
+				<m:detailPages>
+					<m:Page id="detail">
+						<m:customHeader>
+							<m:Bar>
+								<m:contentMiddle>
+									<m:Title text="Proceso de Facturación" titleStyle="H5"/>
+								</m:contentMiddle>
+								<m:contentLeft>
+									<m:Button icon="sap-icon://nav-back" press="btnRegresarOrdenCompra" id="idNav"/>
+								</m:contentLeft>
+								<m:contentRight>
+									<m:Button id="idErrores" icon="sap-icon://message-popup" text="{myParam>/listErrores/length}" type="Emphasized" press="btnErrores"/>
+									<m:Button id="idFacturar" icon="sap-icon://sales-order-item" text="Facturar" type="Emphasized" press="btnFacturar"/>
+								</m:contentRight>
+							</m:Bar>
+						</m:customHeader>
+						<m:content>
+							<m:IconTabBar id="idIconTabBarNoIcons" expanded="{device>/isNoPhone}" >
+								<m:items>
+									<m:IconTabFilter text="Items Seleccionados a Facturar" visible="false">
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+													<!-- backgroundDesign="Solid"-->
+													<m:VBox>
+														<tab:Table id="idTableItemEntregado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listSelectDetalleFacturaEntregado'}"
+															visibleRowCount="14" showNoData="No se hallaron Items." rowSelectionChange="btnFilaEntregado" selectionMode="Single">
+															<tab:toolbar>
+																<m:Toolbar>
+																	<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																	<m:Title text="Items" titleStyle="H3"/>
+																	<m:ToolbarSpacer/>
+																	<m:Title text="N° Registros ( {myParam>/listSelectDetalleFacturaEntregado/length} )" titleStyle="H4"/>
+																</m:Toolbar>
+															</tab:toolbar>
+															<tab:noData>
+																<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+															</tab:noData>
+															<tab:columns>
+																<tab:Column id="idColumEntregado9" width="6rem" hAlign="Center">
+																	<m:Text id="idTextColumEntregado9" text="Posición"/>
+																	<tab:template>
+																		<m:Label text="{myParam>clistSelectDetalleFacturaEntregadoPosicion}"/>
+																	</tab:template>
+																</tab:Column>
+																<tab:Column id="idColumEntregado1" width="14rem" hAlign="Center">
+																	<m:Text id="idTextColumEntregado1" text="Descripción"/>
+																	<tab:template>
+																		<m:Label text="{myParam>clistSelectDetalleFacturaEntregadoDescripcion}" design="Bold"/>
+																	</tab:template>
+																</tab:Column>
+																<tab:Column id="idColumEntregado2" width="6rem" hAlign="Center">
+																	<m:Text id="idTextColumEntregado2" text="Cantidad"/>
+																	<tab:template>
+																		<m:Text text="{myParam>clistSelectDetalleFacturaEntregadoCantidad}"/>
+																	</tab:template>
+																</tab:Column>
+																<tab:Column id="idColumEntregado8" width="6rem" hAlign="Center">
+																	<m:Text id="idTextColumEntregado8" text="Valor a facturar"/>
+																	<tab:template>
+																		<m:Text text="{myParam>clistSelectDetalleFacturaEntregadoCantidadAFacturar}"/>
+																	</tab:template>
+																</tab:Column>
+																<tab:Column id="idColumEntregado3" width="7rem" hAlign="Center">
+																	<m:Text id="idTextColumEntregado3" text="Precio"/>
+																	<tab:template>
+																		<m:ObjectNumber
+																			number="{ path: 'myParam>clistSelectDetalleFacturaEntregadoPrecio', formatter: '.convertirDecimal' } {myParam>clistSelectDetalleFacturaEntregadoMoneda}"
+																			textAlign="Center"/>
+																	</tab:template>
+																</tab:Column>
+																<tab:Column id="idColumEntregado4" width="7rem" hAlign="Center">
+																	<m:Text id="idTextColumEntregado4" text="Valor Neto"/>
+																	<tab:template>
+																		<m:ObjectNumber
+																			number="{ path: 'myParam>clistSelectDetalleFacturaEntregadoValorNeto', formatter: '.convertirDecimal' } {myParam>clistSelectDetalleFacturaEntregadoMoneda}"
+																			textAlign="Center"/>
+																	</tab:template>
+																</tab:Column>
+																<tab:Column id="idColumEntregado6" width="8rem" hAlign="Center">
+																	<m:Text id="idTextColumEntregado6" text="Estado"/>
+																	<tab:template>
+																		<m:ObjectStatus text="{ path: 'myParam>clistSelectDetalleFacturaEntregadoEstado', formatter: '.formatAvailableToObjectText' }"
+																			state="{ path: 'myParam>clistSelectDetalleFacturaEntregadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+																	</tab:template>
+																</tab:Column>
+															</tab:columns>
+														</tab:Table>
+													</m:VBox>
+													<m:layoutData>
+														<layout:GridData span="L6 M6 S6"/>
+													</m:layoutData>
+												</m:VBox>
+												<m:VBox>
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+													<!-- backgroundDesign="Solid"-->
+													<m:VBox id="idVizualizarDetalleEntregrado">
+														<m:ObjectHeader binding="{path : 'myParam>/listVizualizarDetFacEntregado'}" responsive="true" fullScreenOptimized="false"
+															icon="sap-icon://my-sales-order" title="{myParam>rDescripcion}" backgroundDesign="Translucent" number="{myParam>rPrecio}"
+															numberUnit="{myParam>rMoneda}">
+															<m:attributes>
+																<m:ObjectAttribute title="Valor Neto" text="{myParam>rValorNeto}"/>
+																<m:ObjectAttribute title="Moneda" text="{myParam>rMoneda}"/>
+																<m:ObjectAttribute title="Cantidad" text="{myParam>rCantidad}"/>
+															</m:attributes>
+															<m:statuses>
+																<m:ObjectStatus title="Estado" text="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectText' }"
+																	state="{ path: 'myParam>rEstado', formatter: '.formatAvailableToObjectState' }"/>
+															</m:statuses>
+														</m:ObjectHeader>
+														<m:ObjectHeader binding="{path : 'myParam>/listVizualizarDetFacEntregado'}" responsive="true" fullScreenOptimized="false"
+															title="Información Adicional" backgroundDesign="Translucent">
+															<m:attributes>
+																<m:ObjectAttribute title="N° Material SAP" text="{myParam>rNumMaterial}"/>
+																<m:ObjectAttribute title="N° Guía Remisión" text="{myParam>rGuiaRemision}"/>
+																<m:ObjectAttribute/>
+																<m:ObjectAttribute title="N° Doc. Material" text="{myParam>rDocMaterial}"/>
+																<m:ObjectAttribute title="Fecha de Registro" text="{myParam>rFechaRegistro}"/>
+																<m:ObjectAttribute/>
+															</m:attributes>
+														</m:ObjectHeader>
+														<m:ObjectHeader binding="{path : 'myParam>/listVizualizarDetFacEntregado'}" responsive="true" fullScreenOptimized="false" title="Entregar a"
+															intro="Dir. de Entrega: {myParam>rDireccionEntrega}" backgroundDesign="Translucent"></m:ObjectHeader>
+														<layout:Grid defaultSpan="L12 M12 S12">
+															<layout:content>
+																<m:VBox>
+																	<tab:Table id="idTableItemCronogramaEntregado" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemCronFacEntregado'}"
+																		visibleRowCount="4" showNoData="No se hallaron Items.">
+																		<tab:toolbar>
+																			<m:Toolbar>
+																				<core:Icon src="sap-icon://documents" alt="Cart" size="1.25rem"/>
+																				<m:Title text="Cronogramas de Entregas" titleStyle="H3"/>
+																				<m:ToolbarSpacer/>
+																				<m:Title text="N° ( {myParam>/listItemCronFacEntregado/length} )" titleStyle="H4"/>
+																			</m:Toolbar>
+																		</tab:toolbar>
+																		<tab:noData>
+																			<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+																		</tab:noData>
+																		<tab:columns>
+																			<tab:Column id="idColumCronogramaEntregado1" width="13rem" hAlign="Center">
+																				<m:Text id="idTextColumCronogramaEntregado1" text="Cantidad"/>
+																				<tab:template>
+																					<m:Text text="{myParam>clistItemCronogramaEntregadoCantidad}"/>
+																				</tab:template>
+																			</tab:Column>
+																			<tab:Column id="idColumCronogramaEntregado2" width="15rem" hAlign="Center">
+																				<m:Text id="idTextColumCronogramaEntregado2" text="Fecha de Entrega"/>
+																				<tab:template>
+																					<m:Text
+																						text="{ path: 'myParam>clistItemCronogramaEntregadoFechaEntrega', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+																						wrapping="false"/>
+																				</tab:template>
+																			</tab:Column>
+																			<tab:Column id="idColumCronogramaEntregado3" width="15rem" hAlign="Center">
+																				<m:Text id="idTextColumCronogramaEntregado3" text="Fecha de Entrega Estimada"/>
+																				<tab:template>
+																					<m:Text
+																						text="{ path: 'myParam>clistItemCronogramaEntregadoFechaEstimada', type: 'sap.ui.model.type.Date', formatOptions: {source: {pattern: 'yyyyMMdd'},pattern: 'dd/MM/yyyy'}}"
+																						wrapping="false"/>
+																				</tab:template>
+																			</tab:Column>
+																			<tab:Column id="idColumCronogramaEntregado4" width="14rem" hAlign="Center">
+																				<m:Text id="idTextColumCronogramaEntregado4" text="Estado"/>
+																				<tab:template>
+																					<m:ObjectStatus text="{ path: 'myParam>clistItemCronogramaEntregadoEstado', formatter: '.formatAvailableToObjectText' }"
+																						state="{ path: 'myParam>clistItemCronogramaEntregadoEstado', formatter: '.formatAvailableToObjectState' }"/>
+																				</tab:template>
+																			</tab:Column>
+																		</tab:columns>
+																	</tab:Table>
+																</m:VBox>
+															</layout:content>
+														</layout:Grid>
+													</m:VBox>
+													<m:layoutData>
+														<layout:GridData span="L6 M6 S6"/>
+													</m:layoutData>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+									<m:IconTabFilter text="Validación de Factura">
+										<Toolbar width="100%" height="auto">
+										<!--	<m:VBox width="70%">
+												<layout:VerticalLayout width="100%">
+													<m:Label text="Cargar XML: " design="Bold" labelFor="idXML" width="100%"/>
+													<Toolbar width="100%" id="idToolbar01">
+														<file:FileUploader id="idXML" name="myFileUpload" uploadUrl="upload/" tooltip="Subir Documento XML" width="80%" placeholder="Archivo XML"
+															change="change" fileType="XML" buttonText="Buscar" style="Emphasized" required="true"/>
+														<m:Button text="Credenciales" id="idCredenciales" icon="sap-icon://account" width="20%" press="btnCredenciales" type="Emphasized"/>
+													</Toolbar>
+													<m:Button text="Cargar XML en Tabla" id="idAnadirCargarXMLTabla" icon="sap-icon://excel-attachment" width="100%"
+														press="btnAnadirCargarXMLTabla" type="Emphasized"/>
+												</layout:VerticalLayout>
+											</m:VBox>
+											<m:VBox width="30%">
+												<layout:HorizontalLayout></layout:HorizontalLayout>
+												<m:VBox>
+													<m:Label text="Mensajes de Validación" design="Bold" width="100%"/>
+													<m:MessageStrip id="idValidacionOrdyFac" text="Validar Factura con la Orden de Compra" type="Information" showIcon="true"></m:MessageStrip>
+													<layout:HorizontalLayout></layout:HorizontalLayout>
+													<m:MessageStrip id="idValidacionFacySunat" text="Validar Factura con la SUNAT" type="Information" showIcon="true"></m:MessageStrip>
+												</m:VBox>
+												<m:layoutData>
+													<layout:GridData span="L3 M3 S3"/>
+												</m:layoutData>
+											</m:VBox>-->
+											
+												<m:VBox width="25%">
+											<layout:VerticalLayout width="100%">
+												<layout:HorizontalLayout></layout:HorizontalLayout>
+												<m:Label text="Cargar XML: " design="Bold" labelFor="idXML" width="100%"/>
+												<Toolbar width="100%" id="idToolbar01">
+													<file:FileUploader id="idXML" name="myFileUpload" uploadUrl="upload/" tooltip="Subir Documento XML" width="100%" placeholder="Archivo XML"
+														change="change" fileType="XML" buttonText="Buscar" style="Emphasized"  icon="sap-icon://laptop"/>
+												<!--	<m:Button text="Credenciales" id="idCredenciales" icon="sap-icon://account" width="20%" press="validarSunat" type="Emphasized"/>-->
+												</Toolbar>
+												<m:Button text="Cargar XML en Tabla" id="idAnadirCargarXMLTabla" icon="sap-icon://excel-attachment" width="100%"
+													press="btnAnadirCargarXMLTabla" type="Emphasized"/>
+											</layout:VerticalLayout>
+										</m:VBox>
+										<m:VBox width="75%">
+											<layout:HorizontalLayout></layout:HorizontalLayout>
+											<!-- backgroundDesign="Solid"-->
+											<m:Toolbar height="auto" width="100%">
+											<m:VBox  width="50%">
+												<m:Label text="Mensajes de Validación" design="Bold" width="100%"/>
+												<m:MessageStrip  id="idValidacionFacySunat1" text="Estado del comprobante a la fecha de la consulta : SIN ASIGNAR" type="Information" showIcon="true"></m:MessageStrip>
+												<layout:HorizontalLayout></layout:HorizontalLayout>
+												<m:MessageStrip   id="idValidacionFacySunat2" text="Estado del contribuyente a la fecha de emisión : SIN ASIGNAR" type="Information" showIcon="true"></m:MessageStrip>
+											</m:VBox>
+											<m:VBox width="50%">
+												<m:Label text="" design="Bold" width="100%"/>
+												<m:MessageStrip id="idValidacionFacySunat3" text="Validar Factura con la SUNAT" type="Information" showIcon="true"></m:MessageStrip>
+												<layout:HorizontalLayout></layout:HorizontalLayout>
+												<m:MessageStrip id="idValidacionFacAsig" text="Condición de domicilio a la fecha de emisión : SIN ASIGNAR" type="Information" showIcon="true"></m:MessageStrip>
+											</m:VBox>
+											</m:Toolbar>
+											<m:layoutData>
+												<layout:GridData span="L3 M3 S3"/>
+											</m:layoutData>
+										</m:VBox>
+										</Toolbar>
+										<layout:Grid defaultSpan="L12 M12 S12">
+											<layout:content>
+												<m:VBox>
+													<m:VBox>
+														<m:ScrollContainer height="480px" width="100%" horizontal="true" vertical="true" focusable="true">
+															<m:QuickViewCard id="quickViewCard" pages="{path : 'myParam>/pages', templateShareable : 'true'}" navigate="onNavigate"
+																afterNavigate="onAfterNavigate">
+																<m:QuickViewPage pageId="{myParam>pageId}" header="{myParam>header}" icon="{myParam>icon}" title="{myParam>title}"
+																	titleUrl="{myParam>titleUrl}" groups="{path : 'myParam>groups', templateShareable : 'true'}" description="{myParam>description}">
+																	<m:QuickViewGroup elements="{path : 'myParam>/listItemCabeceraFactura', templateShareable : 'true'}">
+																		<m:QuickViewGroupElement label="{myParam>label}" value="{myParam>value}" url="{myParam>url}" type="{myParam>elementType}"
+																			pageLinkId="{myParam>pageLinkId}" emailSubject="{myParam>emailSubject}" target="{myParam>target}"></m:QuickViewGroupElement>
+																	</m:QuickViewGroup>
+																</m:QuickViewPage>
+															</m:QuickViewCard>
+														</m:ScrollContainer>
+													</m:VBox>
+													<m:layoutData>
+														<layout:GridData span="L3 M3 S3"/>
+													</m:layoutData>
+												</m:VBox>
+												<m:VBox>
+													<m:VBox>
+														<tab:Table id="idTableItemDetalleFac" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemDetalleFactura'}" visibleRowCount="9"
+															showNoData="No se hallaron Items.">
+															<tab:toolbar>
+																<m:Toolbar>
+																	<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+																	<m:Title text="Detalle de la Factura" titleStyle="H3"/>
+																	<m:ToolbarSpacer/>
+																	<m:Title text="N° Registros ( {myParam>/listItemDetalleFactura/length} )" titleStyle="H4"/>
+																</m:Toolbar>
+															</tab:toolbar>
+															<tab:noData>
+																<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+															</tab:noData>
+															<tab:columns>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Buscar Item"/>
+																<tab:template>
+																	<m:Button text="Buscar" id="idBscarItem" icon="sap-icon://search" width="100%" press="btnBuscarItem" type="Emphasized"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Estado"/>
+																<tab:template>
+																	<m:ObjectStatus text="{myParam>clistItemDetalleFacturaEstado}"
+																		state="{ path: 'myParam>clistItemDetalleFacturaEstado', formatter: '.formatStatusItemFac' }"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column width="8rem" hAlign="Center">
+																<m:Text text="Total OC"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaTotal}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac11" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac11" text="Precio Neto"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaValortotalNetoXItem}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac1" width="5rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac1" text="Posición"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaPosicion}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac2" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac2" text="Código"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaCodigo}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac3" width="20rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac3" text="Descripcion"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaDescripcion}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac4" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac4" text="Unidad de Medida"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaUniMedida}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac5" width="6rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac5" text="Cantidad"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaCantidad}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac6" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac6" text="Afectación al IGV por Item"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaAfectacionIGV}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac7" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac7" text="Precio Unitario por Item"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaPreUnixItem}"/>
+																</tab:template>
+															</tab:Column>
+															<tab:Column id="idColumDetalleFac8" width="8rem" hAlign="Center">
+																<m:Text id="idTextColumDetalleFac8" text="Precio Venta por Item"/>
+																<tab:template>
+																	<m:Label text="{myParam>clistItemDetalleFacturaPreVenxItem}"/>
+																</tab:template>
+															</tab:Column>
+															<!--<tab:Column id="idColumDetalleFac9" width="8rem" hAlign="Center">
+																				<m:Text id="idTextColumDetalleFac9" text="Total IGV por Item"/>
+																				<tab:template>
+																					<m:Label text="{myParam>clistItemDetalleFacturaTotIGVxItem}"/>
+																				</tab:template>
+																			</tab:Column>
+																			<tab:Column id="idColumDetalleFac10" width="8rem" hAlign="Center">
+																				<m:Text id="idTextColumDetalleFac10" text="Valor de venta por item"/>
+																				<tab:template>
+																					<m:Label text="{myParam>clistItemDetalleFacturaValorVenxItem}"/>
+																				</tab:template>
+																			</tab:Column>-->
+														</tab:columns>
+														</tab:Table>
+													</m:VBox>
+													<m:layoutData>
+														<layout:GridData span="L9 M9 S9"/>
+													</m:layoutData>
+													<m:Toolbar height="auto" width="auto" class="sapUiTinyMargin">
+														<m:ToolbarSpacer></m:ToolbarSpacer>
+														<layout:VerticalLayout>
+															<m:Label text="Total descuentos: " design="Bold" labelFor="idTotalDescuentos"/>
+															<m:Input id="idTotalDescuentos" value="" type="Text" placeholder="" required="false" width="200px" editable="false"/>
+														</layout:VerticalLayout>
+														<layout:VerticalLayout>
+															<m:Label text="Total IGV: " design="Bold" labelFor="idTotalIGV"/>
+															<m:Input id="idTotalIGV" value="" type="Text" placeholder="" required="false" width="200px" editable="false"/>
+														</layout:VerticalLayout>
+														<layout:VerticalLayout>
+															<m:Label text="Importe Total: " design="Bold" labelFor="idImporteTotal"/>
+															<m:Input id="idImporteTotal" value="" type="Text" placeholder="" required="false" width="200px" editable="false"/>
+														</layout:VerticalLayout>
+													</m:Toolbar>
+												</m:VBox>
+											</layout:content>
+										</layout:Grid>
+									</m:IconTabFilter>
+								</m:items>
+							</m:IconTabBar>
+						</m:content>
+					</m:Page>
+				</m:detailPages>
+			</m:SplitApp>
+		</m:pages>
+	</m:App>
+</mvc:View>

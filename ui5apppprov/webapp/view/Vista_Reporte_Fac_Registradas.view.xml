@@ -1,0 +1,173 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:tnt="sap.tnt"
+	xmlns:layout="sap.ui.layout" xmlns:a="sap.f" xmlns:tab="sap.ui.table"
+	controllerName="nspprov.ui5apppprov.controller.Vista_Reporte_Fac_Registradas" xmlns:html="http://www.w3.org/1999/xhtml">
+	<App>
+		<pages>
+			<Page title="Resumen de facturas registradas">
+				<customHeader>
+					<Bar>
+						<contentLeft>
+							<!--<Button id="idNav" icon="sap-icon://nav-back" press="btnInicio"/>-->
+							<Button id="idNavMenu" icon="sap-icon://nav-back" press="btnRegresarMenu"/>
+							<Label text="RUC de la empresa: {myParam>/usuarioRuc}"/>
+						</contentLeft>
+						<contentMiddle>
+							<Title level="H3" text="Resumen de facturas registradas"/>
+						</contentMiddle>
+						<contentRight>
+							<Label text="RUC del proveedor: {myParam>/usuarioLogin}"/>
+						</contentRight>
+					</Bar>
+				</customHeader>
+				<content>
+					<layout:Grid defaultSpan="L12 M12 S12">
+						<layout:content>
+							<VBox>
+								<tab:Table id="idTableResFacReg" sort="sortDeliveryDate" rows="{ path: 'myParam>/listResFacReg'}" visibleRowCount="13"
+									showNoData="No se hallaron los usuarios." width="100%">
+									<tab:toolbar>
+										<Toolbar height="auto" class="sapUiSmallMargin">
+											<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+											<Title text="Tabla de Facturas ({myParam>/listResFacReg/length})" titleStyle="H3"/>
+											<ToolbarSpacer/>
+											<!--<VBox>
+												<Label text="Tipo Carga"/>
+												<ComboBox id="idTipoCarga" items="{ path: 'myParam>/listTipoCarga'}" placeholder="- Seleccione -" required="false" width="100%">
+													<core:Item key="{myParam>clistTipoCargaCod}" text="{myParam>clistTipoCargaDes}"/>
+												</ComboBox>
+											</VBox>
+											<ToolbarSpacer/>
+											<VBox>
+												<Text text="Número factura"/>
+												<Input id="idNumFactura" value="" placeholder="Ingrese N° Factura" type="Text"></Input>
+											</VBox>
+											<ToolbarSpacer/>
+											<VBox>
+												<Text text="Fecha de emisión"/>
+												<DatePicker id="idFecEmision" value="" valueFormat="yyyy-MM-dd" placeholder="Ingrese Fec. de Emisión" displayFormat="dd/MM/yyyy"
+													change="handleChange"/>
+											</VBox>
+											<ToolbarSpacer/>
+											<VBox>
+												<Text text="Fecha de pago"/>
+												<DatePicker id="idFecPago" value="" valueFormat="yyyy-MM-dd" placeholder="Ingrese Fec. de pago" displayFormat="dd/MM/yyyy"
+													change="handleChange"/>
+											</VBox>
+											<ToolbarSpacer/>
+											<VBox>
+												<Text text=""/>
+												<Button text="Filtrar" icon="sap-icon://search" press="btnFiltrar" type="Emphasized"/>
+											</VBox>-->
+										
+												<ToolbarSpacer/>
+											<VBox>
+												<Text text="Fecha desde"/>
+												<DatePicker id="idFecEmision"  valueFormat="yyyyMMdd" placeholder="Ingrese Fec. de Emisión" displayFormat="dd/MM/yyyy"
+													change="handleChange" />
+											</VBox>
+											<VBox>
+												<Text text="Fecha hasta"/>
+												<DatePicker id="idFecPago"  valueFormat="yyyyMMdd" placeholder="Ingrese Fec. de pago" displayFormat="dd/MM/yyyy"
+													change="handleChange"/>
+											</VBox>
+											<VBox>
+												<Text text=""/>
+												<Button text="Filtrar" icon="sap-icon://search" press="getDataResFacReg2" type="Emphasized"/>
+											</VBox>
+											<VBox>
+												<Text text=""/>
+												<MenuButton type="Emphasized" icon="sap-icon://excel-attachment">
+													<menu>
+														<Menu itemSelected="onMenuAction">
+															<items>
+																<MenuItem text="Exportar" press="onPressExcel"/>
+															</items>
+														</Menu>
+													</menu>
+												</MenuButton>
+											</VBox>
+										</Toolbar>
+									</tab:toolbar>
+									<tab:noData>
+										<Link class="sapUiMediumMargin" text="No se hallaron los usuarios."/>
+									</tab:noData>
+									<tab:columns>
+										<tab:Column width="12rem" hAlign="Center" sortProperty="myParam>ESTADO2" filterProperty="ESTADO2">
+											<Text text="Estado"/>
+											<tab:template>
+												<!--<ObjectStatus text="{path: 'myParam>ESTADO', formatter: '.formatoEstado'}"
+													state="{ path: 'myParam>ESTADO', formatter: '.formatEstadoFactura2' }"/>-->
+												<tnt:InfoLabel id="il8" text="{myParam>ESTADO2}" colorScheme="{ path: 'myParam>ESTADO', formatter: '.formatEstadoFactura3' }"
+													displayOnly="true"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="10rem" hAlign="Center" sortProperty="myParam>TIPO_CARGA2" filterProperty="TIPO_CARGA2">
+											<Text text="Tipo de Carga"/>
+											<tab:template>
+												<Label text="{myParam>TIPO_CARGA2}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="10rem" hAlign="Center" sortProperty="REFERENCIA" filterProperty="REFERENCIA">
+											<Text text="Número factura"/>
+											<tab:template>
+												<Label text="{myParam>REFERENCIA}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="10rem" hAlign="Center" sortProperty="FC_FEC_EMISION" filterProperty="FC_FEC_EMISION">
+											<Text text="F. de emisión"/>
+											<tab:template>
+												<Label text="{myParam>FC_FEC_EMISION}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="10rem" hAlign="Center" sortProperty="myParam>FC_FEC_REGISTRO" filterProperty="FC_FEC_REGISTRO" sorted="true">
+											<Text text="F. de registro"/>
+											<tab:template>
+												<Label text="{myParam>FC_FEC_REGISTRO}"/>
+											</tab:template>
+										</tab:Column>
+										<!--<tab:Column width="10rem" hAlign="Center" sortProperty="myParam>FEC_VENCIMIENTO" filterProperty="FEC_VENCIMIENTO">
+											<Text text="F. prog. pago"/>
+											<tab:template>
+												<Label text="{myParam>FEC_VENCIMIENTO}"/>
+											</tab:template>
+										</tab:Column>-->
+										<tab:Column width="10rem" hAlign="Center" sortProperty="FEC_PAGO" filterProperty="FEC_PAGO">
+											<Text text="F. de pago"/>
+											<tab:template>
+												<Label text="{myParam>FEC_PAGO}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="10rem" hAlign="Center" sortProperty="TOTAL_CON_IGV" filterProperty="TOTAL_CON_IGV">
+											<Text text="Importe con IGV"/>
+											<tab:template>
+												<Label text="{myParam>TOTAL_CON_IGV}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="10rem" hAlign="Center" sortProperty="TOTAL_IGV" filterProperty="TOTAL_IGV">
+											<Text text="Total IGV"/>
+											<tab:template>
+												<Label text="{myParam>TOTAL_IGV}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="10rem" hAlign="Center" sortProperty="TOTAL_SIN_IGV" filterProperty="TOTAL_SIN_IGV">
+											<Text text="Importe sin IGV"/>
+											<tab:template>
+												<Label text="{myParam>TOTAL_SIN_IGV}"/>
+											</tab:template>
+										</tab:Column>
+										<tab:Column width="8rem" hAlign="Center" sortProperty="MONEDA" filterProperty="MONEDA">
+											<Text text="Moneda"/>
+											<tab:template>
+												<Label text="{myParam>MONEDA}"/>
+											</tab:template>
+										</tab:Column>
+									</tab:columns>
+								</tab:Table>
+							</VBox>
+						</layout:content>
+					</layout:Grid>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

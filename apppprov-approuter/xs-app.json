@@ -1,0 +1,58 @@
+{
+    "welcomeFile": "/index.html",
+    "logout": {
+        "logoutEndpoint": "/logout",
+        "logoutPage": "/logout.html"
+    },
+    "authenticationMethod": "route",
+    "routes": [
+        {
+            "source": "^/cpdb/(.*)$",
+            "target": "/$1",
+            "destination": "Capdbsrv"
+        },
+        {
+            "source": "^/s4h/(.*)$",
+            "target": "/$1",
+            "destination": "S4H"
+        },
+        {
+            "source": "^/logout$",
+            "target": "/nspprovui5apppprov/logout",
+            "service": "html5-apps-repo-rt",
+            "authenticationType": "none"
+        },
+        {
+            "source": "^/logout.html$",
+            "target": "/nspprovui5apppprov/logout.html",
+            "service": "html5-apps-repo-rt",
+            "authenticationType": "none",
+            "cacheControl": "no-cache, no-store, must-revalidate"
+        },
+        {
+            "source": "^/index.html$",
+            "target": "/nspprovui5apppprov/index.html",
+            "service": "html5-apps-repo-rt",
+            "authenticationType": "xsuaa",
+            "cacheControl": "no-cache, no-store, must-revalidate"
+        },
+        {
+            "source": "^/resources/(.*)$",
+            "target": "/nspprovui5apppprov/resources/$1",
+            "authenticationType": "none",
+            "destination": "ui5"
+        },
+        {
+            "source": "^/test-resources/(.*)$",
+            "target": "/nspprovui5apppprov/test-resources/$1",
+            "authenticationType": "none",
+            "destination": "ui5"
+        },
+        {
+            "source": "^(.*)$",
+            "target": "/nspprovui5apppprov/$1",
+            "service": "html5-apps-repo-rt",
+            "authenticationType": "xsuaa"
+        }
+    ]
+}

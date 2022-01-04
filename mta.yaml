@@ -1,0 +1,81 @@
+_schema-version: "3.2"
+ID: apppprov
+version: 0.0.1
+modules:
+- name: apppprov-approuter
+  type: approuter.nodejs
+  path: apppprov-approuter
+  requires:
+  - name: apppprov_html_repo_runtime
+  - name: uaa_apppprov
+  - name: apppprov-dest-srv
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+- name: apppprov_ui_deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: apppprov_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - nspprovui5apppprov.zip
+      name: nspprovui5apppprov
+      target-path: resources/
+- name: nspprovui5apppprov
+  type: html5
+  path: ui5apppprov
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: apppprov_html_repo_runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: uaa_apppprov
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: apppprov-xsuaa-service
+    service-plan: application
+- name: apppprov_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+- name: apppprov-dest-srv
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: false
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: apppprov-dest-srv
+    service-plan: lite
+parameters:
+  deploy_mode: html5-repo

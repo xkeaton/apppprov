@@ -1,0 +1,298 @@
+<mvc:View controllerName="nspprov.ui5apppprov.controller.Vista_Registro_Factura_Manual" xmlns:m="sap.m"
+	xmlns:tnt="sap.tnt" xmlns:layout="sap.ui.layout" xmlns:semantic="sap.f.semantic" xmlns:file="sap.ui.unified" xmlns:tab="sap.ui.table"
+	xmlns:ux="sap.uxap" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:f="sap.f"
+	xmlns:card="sap.f.cards">
+	<App>
+		<pages>
+			<Page title="Title">
+				<m:customHeader>
+					<m:Bar>
+						<m:contentLeft>
+							<m:Button id="idNav" icon="sap-icon://nav-back" press="btnInicio"/>
+						</m:contentLeft>
+						<m:contentMiddle>
+							<m:Title level="H3" text="Registro de Factura (Manual)"/>
+						</m:contentMiddle>
+						<m:contentRight>
+							<m:Button id="idErrores" icon="sap-icon://message-popup" text="{myParam>/listErrores/length}" type="Emphasized" press="btnErrores"/>
+							<m:Button id="idFacturar" icon="sap-icon://sales-order-item" text="Registrar" type="Emphasized" press="btnFacturar"/>
+						</m:contentRight>
+					</m:Bar>
+				</m:customHeader>
+				<m:content>
+					<m:SplitApp id="SplitAppDemo1" initialDetail="detail" orientationChange="onOrientationChange">
+						<m:masterPages>
+							<Page title="Master"/>
+						</m:masterPages>
+						<m:detailPages>
+							<m:Page id="detail" showHeader="false">
+								<m:content>
+									<Toolbar width="100%" height="auto">
+										<m:VBox width="30%">
+											<layout:VerticalLayout width="100%">
+												<layout:HorizontalLayout></layout:HorizontalLayout>
+												<m:Button text="Validar con la SUNAT" id="idAnadirCargarXMLTabla" icon="sap-icon://home-share" width="100%" press="pressValidarSunat"
+													type="Emphasized"/>
+												<m:ScrollContainer height="480px" width="100%" horizontal="true" vertical="true" focusable="true">
+													<f:Card width="100%">
+														<!--	<f:header>
+																<card:Header title="Buy bus ticket on-line" subtitle="Buy a single drive ticket for a date" iconSrc="sap-icon://bus-public-transport"/>
+															</f:header>-->
+														<f:content>
+															<m:VBox height="100%" class="sapUiSmallMargin" justifyContent="SpaceBetween">
+																<m:Toolbar height="auto" width="100%">
+																	<f:Avatar src="sap-icon://sales-order-item" displaySize="M" displayShape="Square" showBorder="true"></f:Avatar>
+																	<layout:VerticalLayout>
+																		<m:Label text="Factura Electrónica" design="Bold" labelFor="idFacturaNumbre" width="100%"/>
+																		<m:Input id="idFacturaNumbre" type="Text" placeholder="Ingrese N° de factura ..."
+																			valueStateText="Se requiere ingresar un N° de factura valido. Ejm. F001-1234"></m:Input>
+																	</layout:VerticalLayout>
+																</m:Toolbar>
+																<m:Label text="Versión del UBL:" labelFor="idVersionUBL" width="100%"/>
+																<m:Input id="idVersionUBL" value="2.1" type="Number" placeholder="Ingrese UBL (10) ..." maxLength="10" width="100%"
+																	valueStateText="Se requiere ingresar una versión UBL válida. Ejm. 2.1"></m:Input>
+																<m:Label text="Fecha de Emisión:" labelFor="idFecEmision" width="100%"/>
+																<m:DatePicker id="idFecEmision" dateValue="{myParam>/dateManual}" valueFormat="yyyy-MM-dd" displayFormat="dd/MM/yyyy"
+																	class="sapUiSmallMarginBottom" width="100%" placeholder="AAAA/MM/DD" required="true"
+																	valueStateText="Se requiere ingresar una fecha de emisión válida."/>
+																<m:Label text="Nombres o Denominación o Razón Social:" labelFor="idRazSocial" width="100%"/>
+																<m:Input id="idRazSocial" type="Text" placeholder="Ingrese Nombre/Denominación/Raz. Social (100)..." maxLength="100"
+																	valueStateText="El valor ingresado en el campo 'Nombre/Denominación/Raz. Social' es inválido."></m:Input>
+																<m:Label text="Nombre Comercial:" labelFor="idNomComercial" width="100%"/>
+																<m:Input id="idNomComercial" type="Text" maxLength="100" placeholder="Ingrese Nombre Comercial (100)..." width="100%"
+																	valueStateText="El valor ingresado en el campo 'Nombre Comercial' es inválido."></m:Input>
+																<m:Label text="Número de RUC:" labelFor="idNumeroRuc" width="100%"/>
+																<m:Input id="idNumeroRuc" type="Text" maxLength="11" placeholder="Ingrese RUC (11)..." width="100%"
+																	valueStateText="El valor ingresado en el campo 'RUC' es inválido." editable="false"></m:Input>
+																<m:Label text="Tipo de documento:" labelFor="idTipoDoc" width="100%"/>
+																<m:ComboBox id="idTipoDoc" editable="false" items="{ path: 'myParam>/tipoFactura'}" class="sapUiSmallMarginBottom"
+																	placeholder="- Seleccione tipo de documento-" required="true" width="100%">
+																	<core:Item key="{myParam>codigo}" text="{myParam>descripción}"/>
+																</m:ComboBox>
+																<m:Label text="Número de RUC del adquirente o usuario:" labelFor="idNumeroRuc2" width="100%"/>
+																<m:Input id="idNumeroRuc2" type="Text" maxLength="11" placeholder="Ingrese RUC adquiriente (11)..." width="100%"
+																	valueStateText="El valor ingresado en el campo 'Número de RUC del adquirente o usuario' es inválido." editable="false"></m:Input>
+																<m:Label text="Nombres o Denominación o Razón Social del adquirente o usuario:" labelFor="idRazSocial2" width="100%"/>
+																<m:Input id="idRazSocial2" type="Text" maxLength="100" placeholder="Ingrese Nombre/Denominación/Raz. Social (100).." width="100%"
+																	valueStateText="El valor ingresado en el campo 'Nombre/Denominación/Raz. Social' es inválido."  editable="false"></m:Input>
+																<m:Label text="Moneda:" labelFor="idMoneda" width="100%"/>
+																<m:Input id="idMoneda" placeholder="Ingrese moneda (3) ..." maxLength="3" width="100%"
+																	valueStateText="El valor ingresado en el campo 'Moneda' es inválido."></m:Input>
+																<m:Label text="Tasa de IGV:" labelFor="idTasaIGV" width="100%"/>
+																<m:Input id="idTasaIGV" type="Number" description="%" placeholder="Ingrese tasa IGV ..." width="100%" liveChange="evtChangeTasa"></m:Input>
+																<m:Label text="Porcentaje de Descuento Global:" labelFor="idPorcentajeDesGlo" width="100%"/>
+																<m:Input id="idPorcentajeDesGlo" type="Number" description="%" placeholder="Ingrese porcentaje descuento global ..." width="100%"
+																	liveChange="evtChangePorcentaje"></m:Input>
+																<m:HBox justifyContent="SpaceBetween"></m:HBox>
+																<m:HBox justifyContent="SpaceBetween"></m:HBox>
+															</m:VBox>
+														</f:content>
+													</f:Card>
+												</m:ScrollContainer>
+											</layout:VerticalLayout>
+										</m:VBox>
+										<m:VBox width="70%">
+											<layout:HorizontalLayout></layout:HorizontalLayout>
+											<!-- backgroundDesign="Solid"-->
+											<layout:VerticalLayout width="100%">
+												<m:Toolbar height="auto" width="100%">
+													<m:VBox width="50%">
+														<m:Label text="Mensajes de Validación" design="Bold" width="100%"/>
+														<m:MessageStrip id="idValidacionFacySunat1" text="Estado del comprobante a la fecha de la consulta : SIN ASIGNAR" type="Information"
+															showIcon="true"></m:MessageStrip>
+														<layout:HorizontalLayout></layout:HorizontalLayout>
+														<m:MessageStrip id="idValidacionFacySunat2" text="Estado del contribuyente a la fecha de emisión : SIN ASIGNAR" type="Information"
+															showIcon="true"></m:MessageStrip>
+													</m:VBox>
+													<m:VBox width="50%">
+														<m:Label text="" design="Bold" width="100%"/>
+														<m:MessageStrip id="idValidacionFacySunat3" text="Validar Factura con la SUNAT" type="Information" showIcon="true"></m:MessageStrip>
+														<layout:HorizontalLayout></layout:HorizontalLayout>
+														<m:MessageStrip id="idValidacionFacAsig" text="Condición de domicilio a la fecha de emisión : SIN ASIGNAR" type="Information"
+															showIcon="true"></m:MessageStrip>
+													</m:VBox>
+												</m:Toolbar>
+												<tab:Table id="idTableItemDetalleFac" sort="sortDeliveryDate" rows="{ path: 'myParam>/listItemDetalleFactura'}" visibleRowCount="8"
+													showNoData="No se hallaron Items.">
+													<tab:toolbar>
+														<m:Toolbar>
+															<core:Icon src="sap-icon://activity-items" alt="Cart" size="1.25rem"/>
+															<m:Title text="Detalle de la Factura" titleStyle="H3"/>
+															<m:ToolbarSpacer/>
+															<m:Label text="Tipo de carga : " design="Bold" textAlign="Right"/>
+																<m:ComboBox id="idComboTipo" items="{ path: 'myParam>/tipoValeIngreso'}" width="200px" selectionChange="changeCargaTipo"
+																	placeholder="Seleccione tipo de vale de ingreso ..." required="true" valueStateText="Se requiere seleccionar un vale de ingreso.">
+																	<core:Item key="{myParam>opcion}" text="{myParam>opcion} | {myParam>descripcion}"/>
+																</m:ComboBox>
+															<m:Button id="idAnadirFila" text="Añadir registro" type="Emphasized" icon="sap-icon://add-activity" press="pressAnadirLista"/>
+															<m:Title text="N° Registros ( {myParam>/listItemDetalleFactura/length} )" titleStyle="H4"/>
+														</m:Toolbar>
+													</tab:toolbar>
+													<tab:noData>
+														<m:Link class="sapUiMediumMargin" text="Ningún Item Encontrado."/>
+													</tab:noData>
+													<tab:columns>
+														<tab:Column width="3rem" hAlign="Center">
+															<m:Text text=""/>
+															<tab:template>
+																<m:Button tooltip="Editar" icon="sap-icon://request" width="100%" press="pressEditarLista" type="Emphasized"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column width="3rem" hAlign="Center">
+															<m:Text text=""/>
+															<tab:template>
+																<m:Button tooltip="Eliminar" icon="sap-icon://delete" width="100%" press="pressEliminarLista" type="Emphasized"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column width="8rem" hAlign="Center">
+															<m:Text text="Buscar Item"/>
+															<tab:template>
+																<m:Button text="Buscar" icon="sap-icon://search" width="100%" press="btnBuscarItem" type="Emphasized"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column width="8rem" hAlign="Center">
+															<m:Text text="Estado"/>
+															<tab:template>
+																<m:ObjectStatus text="{myParam>clistItemDetalleFacturaEstado}"
+																	state="{ path: 'myParam>clistItemDetalleFacturaEstado', formatter: '.formatStatusItemFac' }"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column width="8rem" hAlign="Center">
+															<m:Text text="Total OC"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaTotal}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac11" width="8rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac11" text="Precio Neto"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaValortotalNetoXItem}"/>
+															</tab:template>
+														</tab:Column>
+															<tab:Column  width="8rem" hAlign="Center">
+															<m:Text  text="Precio sin IGV"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaPreUnixItem}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac1" width="5rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac1" text="Posición"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaPosicion}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac2" width="6rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac2" text="Código"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaCodigo}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac3" width="20rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac3" text="Descripcion"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaDescripcion}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac4" width="6rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac4" text="Unidad de Medida"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaUniMedida}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac5" width="6rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac5" text="Cantidad"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaCantidad}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac6" width="8rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac6" text="Afectación al IGV por Item"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaAfectacionIGV}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac7" width="8rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac7" text="Precio Unitario por Item"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaPreUnixItem}"/>
+															</tab:template>
+														</tab:Column>
+														<tab:Column id="idColumDetalleFac8" width="8rem" hAlign="Center">
+															<m:Text id="idTextColumDetalleFac8" text="Precio Venta por Item"/>
+															<tab:template>
+																<m:Label text="{myParam>clistItemDetalleFacturaPreVenxItem}"/>
+															</tab:template>
+														</tab:Column>
+														<!--<tab:Column id="idColumDetalleFac9" width="8rem" hAlign="Center">
+																				<m:Text id="idTextColumDetalleFac9" text="Total IGV por Item"/>
+																				<tab:template>
+																					<m:Label text="{myParam>clistItemDetalleFacturaTotIGVxItem}"/>
+																				</tab:template>
+																			</tab:Column>
+																			<tab:Column id="idColumDetalleFac10" width="8rem" hAlign="Center">
+																				<m:Text id="idTextColumDetalleFac10" text="Valor de venta por item"/>
+																				<tab:template>
+																					<m:Label text="{myParam>clistItemDetalleFacturaValorVenxItem}"/>
+																				</tab:template>
+																			</tab:Column>-->
+													</tab:columns>
+												</tab:Table>
+												<m:Toolbar height="auto" width="100%" class="sapUiTinyMargin">
+													<m:ToolbarSpacer></m:ToolbarSpacer>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="" design="Bold" />
+															<m:Label text="" design="Bold" />
+														<!--<m:ComboBox id="idTipoOperacion" items="{ path: 'myParam>/tipoOperacion'}" width="100%" placeholder="Seleccione tipo de operación ...">-->
+														<!--	<core:Item key="{myParam>operacion}" text="{myParam>operacion}"/>-->
+														<!--</m:ComboBox>-->
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Código detracción: " design="Bold" labelFor="idCodigoDetra"/>
+														<m:ComboBox id="idCodigoDetra" items="{ path: 'myParam>/codigoDetr'}" width="100%" placeholder="Seleccione código detracción ...">
+															<core:Item key="{myParam>codigo}" text="{myParam>codigo} - {myParam>descripcion}"/>
+														</m:ComboBox>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Total descuentos: " design="Bold" labelFor="idTotalDescuentos"/>
+														<m:Input id="idTotalDescuentos" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Total IGV: " design="Bold" labelFor="idTotalIGV"/>
+														<m:Input id="idTotalIGV" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+													<layout:VerticalLayout width="20%">
+														<m:Label text="Importe Total: " design="Bold" labelFor="idImporteTotal"/>
+														<m:Input id="idImporteTotal" value="" type="Text" placeholder="" required="false" width="100%" editable="false"/>
+													</layout:VerticalLayout>
+												</m:Toolbar>
+											</layout:VerticalLayout>
+											<m:layoutData>
+												<layout:GridData span="L3 M3 S3"/>
+											</m:layoutData>
+										</m:VBox>
+									</Toolbar>
+									<layout:Grid defaultSpan="L12 M12 S12">
+										<layout:content>
+											<m:VBox>
+												<m:VBox></m:VBox>
+												<m:layoutData>
+													<layout:GridData span="L3 M3 S3"/>
+												</m:layoutData>
+											</m:VBox>
+											<m:VBox>
+												<m:VBox></m:VBox>
+												<m:layoutData>
+													<layout:GridData span="L9 M9 S9"/>
+												</m:layoutData>
+											</m:VBox>
+										</layout:content>
+									</layout:Grid>
+								</m:content>
+							</m:Page>
+						</m:detailPages>
+					</m:SplitApp>
+				</m:content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>
